@@ -21,6 +21,7 @@ import android.webkit.WebResourceResponse;
 import android.webkit.WebSettings;
 import android.webkit.WebView;
 import android.webkit.WebViewClient;
+import androidx.annotation.Keep;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.webkit.WebSettingsCompat;
 import androidx.webkit.WebViewFeature;
@@ -63,7 +64,7 @@ public class MainActivity extends AppCompatActivity {
     @SuppressLint({"SetJavaScriptEnabled", "QueryPermissionsNeeded"})
     @Override
     protected void onCreate(Bundle savedInstanceState) {
-        // 1. Provera, kopiranje i čitanje konfiguracije iz internog skladišta (sa zaštitom)
+        // 1. Provera, kopiranje i čitanje konfiguracije iz internog skladišta
         loadConfigFromInternalStorage();
 
         if (forceDark) {
@@ -264,7 +265,7 @@ public class MainActivity extends AppCompatActivity {
             public WebResourceResponse shouldInterceptRequest(WebView view, WebResourceRequest request) {
                 String urlStr = request.getUrl().toString();
                 
-                // KLJUČNO: Serviramo appConfig.js direktno iz internog skladišta aplikacije
+                // Serviramo appConfig.js direktno iz internog skladišta aplikacije
                 if (urlStr.endsWith("appConfig.js")) {
                     try {
                         File configFile = new File(getFilesDir(), "appConfig.js");
@@ -426,8 +427,8 @@ public class MainActivity extends AppCompatActivity {
     private void loadConfigFromInternalStorage() {
         File configFile = new File(getFilesDir(), "appConfig.js");
         
-        // Ako fajl ne postoji ili je oštećen, kopiramo ga iz assets-a
-        if (!configFile.exists() || configFile.length() < 10) {
+        // Ako fajl ne postoji, automatski se kopira iz assets-a u interno skladište
+        if (!configFile.exists()) {
             copyAssetToFile("appConfig.js", configFile);
         }
 
@@ -446,48 +447,65 @@ public class MainActivity extends AppCompatActivity {
             externalDomains = parseArray(jsContent, "external");
 
         } catch (Exception e) {
-            // Ako dođe do greške, vraćamo fabrički iz assets-a
             copyAssetToFile("appConfig.js", configFile);
             loadConfigFromInternalStorage();
         }
     }
 
     private void copyAssetToFile(String assetName, File outFile) {
-        try (InputStream in = getAssets().open(assetName);
-             OutputStream out = new FileOutputStream(outFile)) {
-            byte[] buffer = new byte[1024];
-            int read;
-            while ((read = in.read(buffer)) != -1) {
-                out.write(buffer, 0, read);
+        try {
+            File parentDir = outFile.getParentFile();
+            if (parentDir != null && !parentDir.exists()) {
+                parentDir.mkdirs();
+            }
+
+            try (InputStream in = getAssets().open(assetName);
+                 OutputStream out = new FileOutputStream(outFile)) {
+                byte[] buffer = new byte[1024];
+                int read;
+                while ((read = in.read(buffer)) != -1) {
+                    out.write(buffer, 0, read);
+                }
             }
         } catch (Exception ignored) {}
     }
 
     // --- JAVASCRIPT BRIDGE ZA SNIMANJE I RESTART ---
 
+    @Keep
     public static class ConfigSaverInterface {
         Context mContext;
         ConfigSaverInterface(Context c) { mContext = c; }
 
+        @Keep
         @JavascriptInterface
         public void saveConfigFile(String jsContent) {
-            File configFile = new File(mContext.getFilesDir(), "appConfig.js");
-            try (FileOutputStream fos = new FileOutputStream(configFile)) {
-                fos.write(jsContent.getBytes());
+            try {
+                File dir = mContext.getFilesDir();
+                if (!dir.exists()) {
+                    dir.mkdirs();
+                }
+                File configFile = new File(dir, "appConfig.js");
+                try (FileOutputStream fos = new FileOutputStream(configFile)) {
+                    fos.write(jsContent.getBytes());
+                }
             } catch (Exception ignored) {}
         }
 
+        @Keep
         @JavascriptInterface
         public void restartApp() {
-            Intent intent = mContext.getPackageManager().getLaunchIntentForPackage(mContext.getPackageName());
-            if (intent != null) {
-                intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP | Intent.FLAG_ACTIVITY_NEW_TASK);
-                mContext.startActivity(intent);
-                if (mContext instanceof Activity) {
-                    ((Activity) mContext).finish();
+            try {
+                Intent intent = mContext.getPackageManager().getLaunchIntentForPackage(mContext.getPackageName());
+                if (intent != null) {
+                    intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP | Intent.FLAG_ACTIVITY_NEW_TASK);
+                    mContext.startActivity(intent);
+                    if (mContext instanceof Activity) {
+                        ((Activity) mContext).finish();
+                    }
+                    System.exit(0);
                 }
-                System.exit(0);
-            }
+            } catch (Exception ignored) {}
         }
     }
 
