@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no, viewport-fit=cover">
-<title>Loader UI</title>
+<title>Loader</title>
 
 <!-- Učitavanje konfiguracije -->
 <script src="appConfig.js"></script>
@@ -47,62 +47,63 @@ button:focus, button:active, input:focus {
     width: calc(100% - 32px);
     max-width: 340px;
     background: #1a1a1c;
-    border-radius: 10px;
+    border-radius: 12px;
     border: none;
-    padding: 22px 18px;
+    padding: 22px 18px 24px 18px;
     box-shadow: 0 0 0 0.9px #7C874F;
     box-sizing: border-box;
-    overflow: hidden;
-    word-wrap: break-word;
     z-index: 1000;
 }
 
 .popup-header {
     display: flex;
     align-items: center;
-    margin-top: -10px;
+    margin-top: -2px;
     margin-bottom: 20px;
     width: 100%;
+    position: relative;
+    height: 30px;
 }
 
 .popup h3{
     margin: 0;
-    margin-top: -0.8px;
-    margin-bottom: 4px;
     color: #CBD868;
     font-size: 17px;
     font-weight: 600;
-    flex-grow: 1;
+    width: 100%;
     text-align: center;
+    position: absolute;
+    left: 0;
+    right: 0;
+    pointer-events: none;
 }
 
-.settings-icon-btn {
-    margin-top: 0px;
-    margin-left: -7px;
-    margin-right: 5px;
-    margin-bottom: 4px;
+.config-icon-btn {
     background: none;
     border: none;
     color: #CBD868;
     cursor: pointer;
     border-radius: 6px;
-    flex-shrink: 0;
-    transition: background 0.15s;
-    outline: none;
     width: 30px;
     height: 30px;
     display: flex;
     align-items: center;
     justify-content: center;
+    position: absolute;
+    right: 0;
+    z-index: 2;
+    outline: none;
+    -webkit-tap-highlight-color: transparent;
+    transition: background 0.15s;
 }
 
-.settings-icon-btn:hover {
+.config-icon-btn:hover {
     background: rgba(203, 216, 104, 0.1);
 }
 
-.settings-icon-btn svg {
-    width: 16.6px;
-    height: 16.6px;
+.config-icon-btn svg {
+    width: 18px;
+    height: 18px;
     stroke: currentColor;
     stroke-width: 2;
     stroke-linecap: round;
@@ -110,49 +111,12 @@ button:focus, button:active, input:focus {
     fill: none;
 }
 
-.close-settings-icon-btn {
-    background: none;
-    border: none;
-    color: #CBD868;
-    cursor: pointer;
-    border-radius: 6px;
-    width: 34px;
-    height: 34px;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    flex-shrink: 0;
-    transition: background 0.15s;
-    outline: none;
-    margin-top: -10px;
-}
-
-.close-settings-icon-btn:hover {
-    background: rgba(203, 216, 104, 0.1);
-}
-
-.close-settings-icon-btn svg {
-    width: 20px;
-    height: 20px;
-    stroke: currentColor;
-    stroke-width: 2.5;
-    stroke-linecap: round;
-    stroke-linejoin: round;
-}
-
 .checkbox-row {
-    -webkit-tap-highlight-color: transparent;
-    appearance: none;
-    margin: 8px 0 0px 2px;
+    margin: 12px 0 0 4px;
     display: flex;
-    justify-content: flex-start;
     align-items: center;
     color: #DADADA;
     font-size: 14px;
-    text-align: left;
-    min-height: 22px;
-    box-sizing: border-box;
-    width: 100%;
 }
 
 .checkbox-row label {
@@ -162,8 +126,6 @@ button:focus, button:active, input:focus {
     display: flex;
     align-items: center;
     gap: 11px;
-    user-select: none;
-    text-align: left;
 }
 
 .checkbox-row label input[type="checkbox"] {
@@ -180,7 +142,6 @@ button:focus, button:active, input:focus {
     display: inline-flex;
     align-items: center;
     justify-content: center;
-    transition: filter 0.15s, background-color 0.15s, border-color 0.15s;
     position: relative;
     box-sizing: border-box;
     flex-shrink: 0;
@@ -210,30 +171,26 @@ button:focus, button:active, input:focus {
 
 .row{
     display: flex;
-    flex-wrap: wrap;
     gap: 12px;
     justify-content: center;
-    margin-top: 16px;
+    margin-top: 18px;
 }
 
 .row button{
     flex: 1 1 0;
-    width: 0;
-    min-width: 30%;
-    max-width: 60%;
-    box-sizing: border-box;
     padding: 11px;
     border-radius: 10px;
     border: none;
     cursor: pointer;
     font-weight: 600;
-    background-color: var(--btn-accent) !important;
-    color: #555 !important;
-    transition: filter 0.15s, background 0.15s;
+    background-color: var(--btn-accent);
+    color: #555;
     outline: none;
+    -webkit-tap-highlight-color: transparent;
+    transition: filter 0.15s, background 0.15s;
 }
 
-.row button:hover, .settings-icon-btn:hover{
+.row button:hover, .config-icon-btn:hover {
     filter: brightness(1.25);
     box-shadow: 0 3px 10px rgba(0,0,0,0.3);
 }
@@ -251,11 +208,10 @@ button:focus, button:active, input:focus {
 <body>
 
 <!-- GLAVNI POPUP -->
-<div id="mainPopup" class="popup">
+<div class="popup" id="mainPopup">
     <div class="popup-header">
-        <span style="width: 32px;"></span>
         <h3 id="popupTitle">Load Html</h3>
-        <button id="openSettingsBtn" class="settings-icon-btn" title="Edit config">
+        <button id="openConfigBtn" class="config-icon-btn" title="Edit config">
             <svg viewBox="0 0 24 24">
                 <circle cx="12" cy="12" r="3"></circle>
                 <path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1 0 2.83 2 2 0 0 1-2.83 0l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-2 2 2 2 0 0 1-2-2v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 0 1-2.83 0 2 2 0 0 1 0-2.83l-.06-.06a1.65 1.65 0 0 0 .33-1.82 1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1-2-2 2 2 0 0 1 2-2h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 0 1 0-2.83 2 2 0 0 1 2.83 0l.06.06a1.65 1.65 0 0 0 1.82.33H9a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 2-2 2 2 0 0 1 2 2v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l-.06-.06a2 2 0 0 1 2.83 0 2 2 0 0 1 0 2.83l-.06-.06a1.65 1.65 0 0 0-.33 1.82V9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 2 2 2 2 0 0 1-2 2h-.09A1.65 1.65 0 0 0-1.51 1z"></path>
@@ -263,7 +219,7 @@ button:focus, button:active, input:focus {
         </button>
     </div>
     
-    <div class="checkbox-row">
+    <div id="checkboxContainer" class="checkbox-row">
         <label>
             <input type="checkbox" id="clearDataCheckbox">
             <span>Clear local cache and data</span>
@@ -279,18 +235,14 @@ button:focus, button:active, input:focus {
 </div>
 
 <!-- EDITOR MODAL -->
-<div id="settingsPopup" class="popup">
-    <div style="display: flex; justify-content: space-between; align-items: center; margin: 3px 0 14px 4px;">
-        <h3 style="text-align: left; margin: 0;">App Config</h3>
-        <button id="closeSettingsBtn" class="close-settings-icon-btn" title="Back">
-            <svg viewBox="0 0 24 24" fill="none">
-                <path d="M18 6L6 18M6 6l12 12"/>
-            </svg>
-        </button>
+<div class="popup" id="configModal">
+    <div class="popup-header">
+        <h3>App Config</h3>
     </div>
     <textarea id="configTextArea" style="width:100%; height:180px; background:#111; color:#CBD868; border:1.5px solid #555b35; border-radius:8px; padding:10px; font-family:monospace; font-size:12px; box-sizing:border-box; outline:none; resize:none;"></textarea>
     <div class="row" style="margin-top:14px;">
         <button id="saveConfigBtn"><span class="mask-text">Save</span></button>
+        <button id="closeConfigBtn"><span class="mask-text">Close</span></button>
     </div>
 </div>
 
@@ -369,22 +321,22 @@ async function initPreferences() {
     });
 }
 
+const configModal = document.getElementById("configModal");
 const mainPopup = document.getElementById("mainPopup");
-const settingsPopup = document.getElementById("settingsPopup");
 const configTextArea = document.getElementById("configTextArea");
 
-document.getElementById("openSettingsBtn").addEventListener("click", () => {
+document.getElementById("openConfigBtn").addEventListener("click", () => {
     mainPopup.style.display = "none";
     if (window.AndroidBridgeSaver && typeof window.AndroidBridgeSaver.loadConfigFileRaw === 'function') {
         configTextArea.value = window.AndroidBridgeSaver.loadConfigFileRaw();
     } else {
         configTextArea.value = "// Bridge nije dostupan";
     }
-    settingsPopup.style.display = "flex";
+    configModal.style.display = "flex";
 });
 
-document.getElementById("closeSettingsBtn").addEventListener("click", () => {
-    settingsPopup.style.display = "none";
+document.getElementById("closeConfigBtn").addEventListener("click", () => {
+    configModal.style.display = "none";
     mainPopup.style.display = "flex";
 });
 
@@ -434,13 +386,11 @@ async function loadApp(htmlContent, fileName = ""){
                 width: calc(100% - 32px);
                 max-width: 340px;
                 background: #1a1a1c;
-                border-radius: 10px;
+                border-radius: 12px;
                 border: none;
-                padding: 22px 18px;
+                padding: 22px 18px 24px 18px;
                 box-shadow: 0 0 0 0.9px #7C874F;
                 box-sizing: border-box;
-                overflow: hidden;
-                word-wrap: break-word;
                 z-index: 2147483647;
                 font-family: Inter, Arial, sans-serif;
                 user-select: none;
@@ -448,91 +398,60 @@ async function loadApp(htmlContent, fileName = ""){
             .popup-header {
                 display: flex;
                 align-items: center;
-                margin-top: -10px;
+                margin-top: -2px;
                 margin-bottom: 20px;
                 width: 100%;
+                position: relative;
+                height: 30px;
             }
             .popup h3 {
                 margin: 0;
-                margin-top: -0.8px;
-                margin-bottom: 4px;
                 color: #CBD868;
                 font-size: 17px;
                 font-weight: 600;
-                flex-grow: 1;
+                width: 100%;
                 text-align: center;
+                position: absolute;
+                left: 0;
+                right: 0;
+                pointer-events: none;
             }
-            .settings-icon-btn {
-                margin-top: 0px;
-                margin-left: -7px;
-                margin-right: 5px;
-                margin-bottom: 4px;
+            .config-icon-btn {
                 background: none;
                 border: none;
                 color: #CBD868;
                 cursor: pointer;
                 border-radius: 6px;
-                flex-shrink: 0;
-                transition: background 0.15s;
-                outline: none;
                 width: 30px;
                 height: 30px;
                 display: flex;
                 align-items: center;
                 justify-content: center;
+                position: absolute;
+                right: 0;
+                z-index: 2;
+                outline: none;
+                -webkit-tap-highlight-color: transparent;
+                transition: background 0.15s;
             }
-            .settings-icon-btn:hover {
+            .config-icon-btn:hover {
                 background: rgba(203, 216, 104, 0.1);
             }
-            .settings-icon-btn svg {
-                width: 16.6px;
-                height: 16.6px;
+            .config-icon-btn svg {
+                width: 18px;
+                height: 18px;
                 stroke: currentColor;
                 stroke-width: 2;
                 stroke-linecap: round;
                 stroke-linejoin: round;
                 fill: none;
             }
-            .close-settings-icon-btn {
-                background: none;
-                border: none;
-                color: #CBD868;
-                cursor: pointer;
-                border-radius: 6px;
-                width: 34px;
-                height: 34px;
-                display: flex;
-                align-items: center;
-                justify-content: center;
-                flex-shrink: 0;
-                transition: background 0.15s;
-                outline: none;
-                margin-top: -10px;
-            }
-            .close-settings-icon-btn:hover {
-                background: rgba(203, 216, 104, 0.1);
-            }
-            .close-settings-icon-btn svg {
-                width: 20px;
-                height: 20px;
-                stroke: currentColor;
-                stroke-width: 2.5;
-                stroke-linecap: round;
-                stroke-linejoin: round;
-            }
             .checkbox-row {
-                -webkit-tap-highlight-color: transparent;
-                appearance: none;
-                margin: 8px 0 0px 2px;
+                margin: 12px 0 0 4px;
                 display: flex;
-                justify-content: flex-start;
                 align-items: center;
                 color: #DADADA;
                 font-size: 14px;
-                text-align: left;
-                min-height: 22px;
-                box-sizing: border-box;
-                width: 100%;
             }
             .checkbox-row label {
                 color: #DADADA;
@@ -541,8 +460,6 @@ async function loadApp(htmlContent, fileName = ""){
                 display: flex;
                 align-items: center;
                 gap: 11px;
-                user-select: none;
-                text-align: left;
             }
             .checkbox-row label input[type="checkbox"] {
                 appearance: none;
@@ -558,7 +475,6 @@ async function loadApp(htmlContent, fileName = ""){
                 display: inline-flex;
                 align-items: center;
                 justify-content: center;
-                transition: filter 0.15s, background-color 0.15s, border-color 0.15s;
                 position: relative;
                 box-sizing: border-box;
                 flex-shrink: 0;
@@ -584,28 +500,24 @@ async function loadApp(htmlContent, fileName = ""){
             }
             .row {
                 display: flex;
-                flex-wrap: wrap;
                 gap: 12px;
                 justify-content: center;
-                margin-top: 16px;
+                margin-top: 18px;
             }
             .row button {
                 flex: 1 1 0;
-                width: 0;
-                min-width: 30%;
-                max-width: 60%;
-                box-sizing: border-box;
                 padding: 11px;
                 border-radius: 10px;
                 border: none;
                 cursor: pointer;
                 font-weight: 600;
-                background-color: #CBD868 !important;
-                color: #555 !important;
-                transition: filter 0.15s, background 0.15s;
+                background-color: #CBD868;
+                color: #555;
                 outline: none;
+                -webkit-tap-highlight-color: transparent;
+                transition: filter 0.15s, background 0.15s;
             }
-            .row button:hover, .settings-icon-btn:hover {
+            .row button:hover, .config-icon-btn:hover {
                 filter: brightness(1.25);
                 box-shadow: 0 3px 10px rgba(0,0,0,0.3);
             }
@@ -615,11 +527,10 @@ async function loadApp(htmlContent, fileName = ""){
             }
         </style>
 
-        <div id="injectedPopup" class="popup" style="display: flex;">
+        <div id="injectedPopup" class="popup">
             <div class="popup-header">
-                <span style="width: 32px;"></span>
                 <h3>Load Html</h3>
-                <button id="injOpenSettingsBtn" class="settings-icon-btn" title="Edit config">
+                <button id="injOpenConfigBtn" class="config-icon-btn" title="Edit config">
                     <svg viewBox="0 0 24 24">
                         <circle cx="12" cy="12" r="3"></circle>
                         <path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1 0 2.83 2 2 0 0 1-2.83 0l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-2 2 2 2 0 0 1-2-2v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 0 1-2.83 0 2 2 0 0 1 0-2.83l-.06-.06a1.65 1.65 0 0 0 .33-1.82 1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1-2-2 2 2 0 0 1 2-2h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 0 1 0-2.83 2 2 0 0 1 2.83 0l.06.06a1.65 1.65 0 0 0 1.82.33H9a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 2-2 2 2 0 0 1 2 2v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l-.06-.06a2 2 0 0 1 2.83 0 2 2 0 0 1 0 2.83l-.06-.06a1.65 1.65 0 0 0-.33 1.82V9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 2 2 2 2 0 0 1-2 2h-.09A1.65 1.65 0 0 0-1.51 1z"></path>
@@ -638,18 +549,14 @@ async function loadApp(htmlContent, fileName = ""){
             </div>
         </div>
 
-        <div id="injectedSettingsPopup" class="popup">
-            <div style="display: flex; justify-content: space-between; align-items: center; margin: 3px 0 14px 4px;">
-                <h3 style="text-align: left; margin: 0;">App Config</h3>
-                <button id="injCloseSettingsBtn" class="close-settings-icon-btn" title="Back">
-                    <svg viewBox="0 0 24 24" fill="none">
-                        <path d="M18 6L6 18M6 6l12 12"/>
-                    </svg>
-                </button>
+        <div id="injectedConfigModal" class="popup">
+            <div class="popup-header">
+                <h3>App Config</h3>
             </div>
             <textarea id="injConfigTextArea" style="width:100%; height:180px; background:#111; color:#CBD868; border:1.5px solid #555b35; border-radius:8px; padding:10px; font-family:monospace; font-size:12px; box-sizing:border-box; outline:none; resize:none;"></textarea>
             <div class="row" style="margin-top:14px;">
                 <button id="injSaveConfigBtn"><span class="mask-text">Save</span></button>
+                <button id="injCloseConfigBtn"><span class="mask-text">Close</span></button>
             </div>
         </div>
         \`;
@@ -657,7 +564,7 @@ async function loadApp(htmlContent, fileName = ""){
         let tapCount = 0;
         let tapTimeout = null;
         const popup = shadow.getElementById("injectedPopup");
-        const settingsPopup = shadow.getElementById("injectedSettingsPopup");
+        const configModal = shadow.getElementById("injectedConfigModal");
         const clearCheckbox = shadow.getElementById("injectedClearDataCheckbox");
         const textArea = shadow.getElementById("injConfigTextArea");
 
@@ -689,18 +596,18 @@ async function loadApp(htmlContent, fileName = ""){
             };
         });
 
-        shadow.getElementById("injOpenSettingsBtn").addEventListener("click", function() {
+        shadow.getElementById("injOpenConfigBtn").addEventListener("click", function() {
             popup.style.display = "none";
             if (window.AndroidBridgeSaver && typeof window.AndroidBridgeSaver.loadConfigFileRaw === 'function') {
                 textArea.value = window.AndroidBridgeSaver.loadConfigFileRaw();
             } else {
                 textArea.value = "// Bridge nije dostupan";
             }
-            settingsPopup.style.display = "flex";
+            configModal.style.display = "flex";
         });
 
-        shadow.getElementById("injCloseSettingsBtn").addEventListener("click", function() {
-            settingsPopup.style.display = "none";
+        shadow.getElementById("injCloseConfigBtn").addEventListener("click", function() {
+            configModal.style.display = "none";
             popup.style.display = "flex";
         });
 
@@ -714,13 +621,13 @@ async function loadApp(htmlContent, fileName = ""){
         });
 
         document.addEventListener("touchstart", function(e) {
-            if (popup.style.display === "flex" || settingsPopup.style.display === "flex") return;
+            if (popup.style.display === "flex" || configModal.style.display === "flex") return;
             if (e.touches.length > 1) { tapCount = 0; return; }
             tapCount++;
             if (tapTimeout) clearTimeout(tapTimeout);
             if (tapCount >= 6) {
                 tapCount = 0;
-                settingsPopup.style.display = "none";
+                configModal.style.display = "none";
                 popup.style.display = "flex";
             } else {
                 tapTimeout = setTimeout(() => { tapCount = 0; }, 350);
