@@ -12,8 +12,6 @@
 :root{
     --main-background: #070707;
     --btn-accent: #CBD868;
-    --btn-hover: #A4A25C;
-    --btn-active: #8C7F6F;
 }
 
 html, body{
@@ -44,8 +42,6 @@ html, body{
     padding: 22px 18px;
     box-shadow: 0 0 0 0.9px #7C874F;
     box-sizing: border-box;
-    overflow: hidden;
-    word-wrap: break-word;
     z-index: 1000;
 }
 
@@ -67,7 +63,6 @@ html, body{
     text-align: center;
 }
 
-/* Točkić unutar zaglavlja pop-up prozora */
 .config-icon-btn {
     background: none;
     border: none;
@@ -79,14 +74,9 @@ html, body{
     display: flex;
     align-items: center;
     justify-content: center;
-    transition: background 0.15s;
-    outline: none;
     position: absolute;
     right: 0;
-}
-
-.config-icon-btn:hover {
-    background: rgba(203, 216, 104, 0.1);
+    outline: none;
 }
 
 .config-icon-btn svg {
@@ -100,16 +90,11 @@ html, body{
 }
 
 .checkbox-row {
-    -webkit-tap-highlight-color: transparent;
-    appearance: none;
-    margin: 12px 0 0px 4px;
+    margin: 12px 0 0 4px;
     display: flex;
-    justify-content: flex-start;
     align-items: center;
     color: #DADADA;
     font-size: 14px;
-    text-align: left;
-    min-height: 22px;
 }
 
 .checkbox-row label {
@@ -119,8 +104,6 @@ html, body{
     display: flex;
     align-items: center;
     gap: 11px;
-    user-select: none;
-    text-align: left;
 }
 
 .checkbox-row label input[type="checkbox"] {
@@ -137,22 +120,6 @@ html, body{
     display: inline-flex;
     align-items: center;
     justify-content: center;
-    transition: filter 0.15s, background-color 0.15s, border-color 0.15s;
-    position: relative;
-    box-sizing: border-box;
-}
-
-.checkbox-row label input[type="checkbox"]::after {
-    content: "";
-    width: 3px;
-    height: 8px;
-    border: solid #555;
-    border-width: 0 2px 2px 0;
-    transform: rotate(40deg) scale(0);
-    transition: transform 0.15s ease-in-out;
-    position: relative;
-    top: -1px;
-    filter: brightness(0); 
 }
 
 .checkbox-row label input[type="checkbox"]:checked {
@@ -160,13 +127,8 @@ html, body{
     border-color: var(--btn-accent);
 }
 
-.checkbox-row label input[type="checkbox"]:checked::after {
-    transform: rotate(40deg) scale(1);
-}
-
 .row{
     display: flex;
-    flex-wrap: wrap;
     gap: 12px;
     justify-content: center;
     margin-top: 16px;
@@ -174,24 +136,14 @@ html, body{
 
 .row button{
     flex: 1 1 0;
-    width: 0;
-    min-width: 30%;
-    max-width: 60%;
-    box-sizing: border-box;
     padding: 11px;
     border-radius: 10px;
     border: none;
     cursor: pointer;
     font-weight: 600;
-    background-color: var(--btn-accent) !important;
-    color: #555 !important;
-    transition: filter 0.15s, background 0.15s;
+    background-color: var(--btn-accent);
+    color: #555;
     outline: none;
-}
-
-.row button:hover{
-    filter: brightness(1.25);
-    box-shadow: 0 3px 10px rgba(0,0,0,0.3);
 }
 
 .mask-text{
@@ -219,15 +171,16 @@ html, body{
         </button>
     </div>
     
-    <div id="checkboxContainer" class="checkbox-row"></div>
+    <div id="checkboxContainer" class="checkbox-row">
+        <label>
+            <input type="checkbox" id="clearDataCheckbox">
+            <span>Clear local cache and data</span>
+        </label>
+    </div>
     
     <div class="row">
-        <button id="loadBtn">
-            <span id="loadBtnText" class="mask-text">Load</span>
-        </button>
-        <button id="exitBtn">
-            <span class="mask-text">Close</span>
-        </button>
+        <button id="loadBtn"><span class="mask-text">Load</span></button>
+        <button id="exitBtn"><span class="mask-text">Close</span></button>
     </div>
     
     <input type="file" id="fileInput" class="hidden-file-input" accept=".html,.htm" />
@@ -242,12 +195,8 @@ html, body{
     </div>
     <textarea id="configTextArea" style="width:100%; height:180px; background:#111; color:#CBD868; border:1px solid #555b35; border-radius:8px; padding:10px; font-family:monospace; font-size:12px; box-sizing:border-box; outline:none; resize:none;"></textarea>
     <div class="row" style="margin-top:14px;">
-        <button id="saveConfigBtn">
-            <span class="mask-text">Save</span>
-        </button>
-        <button id="closeConfigBtn">
-            <span class="mask-text">Close</span>
-        </button>
+        <button id="saveConfigBtn"><span class="mask-text">Save</span></button>
+        <button id="closeConfigBtn"><span class="mask-text">Close</span></button>
     </div>
 </div>
 
@@ -259,8 +208,7 @@ function openDB() {
     return new Promise((resolve, reject) => {
         const request = indexedDB.open(DB_NAME, 1);
         request.onupgradeneeded = function(e) {
-            const db = e.target.result;
-            db.createObjectStore(STORE_NAME);
+            e.target.result.createObjectStore(STORE_NAME);
         };
         request.onsuccess = function(e) { resolve(e.target.result); };
         request.onerror = function() { reject("IndexedDB error"); };
@@ -317,23 +265,7 @@ async function getSetting(key){
     });
 }
 
-//==========================
-// MENU FUNCTIONS
-//==========================
-async function showPopup() {
-    const title = document.getElementById("popupTitle");
-    const checkboxContainer = document.getElementById("checkboxContainer");
-    const popup = document.getElementById("mainPopup");
-
-    title.innerText = "Load Html";
-
-    checkboxContainer.innerHTML = `
-        <label>
-            <input type="checkbox" id="clearDataCheckbox">
-            <span>Clear local cache and data</span>
-        </label>
-    `;
-
+async function initPreferences() {
     const clearCheckbox = document.getElementById("clearDataCheckbox");
     const savedState = await getSetting("clearCachePreference");
     clearCheckbox.checked = (savedState === undefined || savedState === null) ? false : savedState;
@@ -341,24 +273,14 @@ async function showPopup() {
     clearCheckbox.addEventListener("change", function() {
         saveSetting("clearCachePreference", clearCheckbox.checked);
     });
-
-    popup.style.display = "flex";
 }
 
-function hidePopup() {
-    document.getElementById("mainPopup").style.display = "none";
-}
-
-//=========================
-// CONFIG EDITOR LOGIC (Direktan pristup config objektu bez fetch-ovanja)
-//=========================
 const configModal = document.getElementById("configModal");
+const mainPopup = document.getElementById("mainPopup");
 const configTextArea = document.getElementById("configTextArea");
 
 document.getElementById("openConfigBtn").addEventListener("click", () => {
-    document.getElementById("mainPopup").style.display = "none";
-    
-    // Čitamo direktno trenutni config objekat koji je učitan preko appConfig.js skripte
+    mainPopup.style.display = "none";
     if (typeof config !== 'undefined') {
         configTextArea.value = `const config = {\n` +
             `    startURL: "${config.startURL || ""}",\n` +
@@ -377,7 +299,7 @@ document.getElementById("openConfigBtn").addEventListener("click", () => {
 
 document.getElementById("closeConfigBtn").addEventListener("click", () => {
     configModal.style.display = "none";
-    document.getElementById("mainPopup").style.display = "flex";
+    mainPopup.style.display = "flex";
 });
 
 document.getElementById("saveConfigBtn").addEventListener("click", () => {
@@ -389,11 +311,9 @@ document.getElementById("saveConfigBtn").addEventListener("click", () => {
     }
 });
 
-//=========================
-// LOAD FUNCTION
-//=========================
+// Funkcija za učitavanje sačuvane aplikacije (injektuje se meni i točkić)
 async function loadApp(htmlContent, fileName = ""){
-    hidePopup();
+    mainPopup.style.display = "none";
 
     const customPopupScript = `
     <script>
@@ -421,8 +341,6 @@ async function loadApp(htmlContent, fileName = ""){
                 padding: 22px 18px;
                 box-shadow: 0 0 0 0.9px #7C874F;
                 box-sizing: border-box;
-                overflow: hidden;
-                word-wrap: break-word;
                 z-index: 2147483647;
                 font-family: Inter, Arial, sans-serif;
                 user-select: none;
@@ -456,6 +374,7 @@ async function loadApp(htmlContent, fileName = ""){
                 justify-content: center;
                 position: absolute;
                 right: 0;
+                outline: none;
             }
             .config-icon-btn svg {
                 width: 18px;
@@ -467,16 +386,11 @@ async function loadApp(htmlContent, fileName = ""){
                 fill: none;
             }
             .checkbox-row {
-                -webkit-tap-highlight-color: transparent;
-                appearance: none;
-                margin: 12px 0 0px 4px;
+                margin: 12px 0 0 4px;
                 display: flex;
-                justify-content: flex-start;
                 align-items: center;
                 color: #DADADA;
                 font-size: 14px;
-                text-align: left;
-                min-height: 22px;
             }
             .checkbox-row label {
                 color: #DADADA;
@@ -485,8 +399,6 @@ async function loadApp(htmlContent, fileName = ""){
                 display: flex;
                 align-items: center;
                 gap: 11px;
-                user-select: none;
-                text-align: left;
             }
             .checkbox-row label input[type="checkbox"] {
                 appearance: none;
@@ -502,48 +414,26 @@ async function loadApp(htmlContent, fileName = ""){
                 display: inline-flex;
                 align-items: center;
                 justify-content: center;
-                position: relative;
-                box-sizing: border-box;
-            }
-            .checkbox-row label input[type="checkbox"]::after {
-                content: "";
-                width: 3px;
-                height: 8px;
-                border: solid #555;
-                border-width: 0 2px 2px 0;
-                transform: rotate(40deg) scale(0);
-                transition: transform 0.15s ease-in-out;
-                position: relative;
-                top: -1px;
-                filter: brightness(0); 
             }
             .checkbox-row label input[type="checkbox"]:checked {
                 background-color: #CBD868;
                 border-color: #CBD868;
             }
-            .checkbox-row label input[type="checkbox"]:checked::after {
-                transform: rotate(40deg) scale(1);
-            }
             .row {
                 display: flex;
-                flex-wrap: wrap;
                 gap: 12px;
                 justify-content: center;
                 margin-top: 16px;
             }
             .row button {
                 flex: 1 1 0;
-                width: 0;
-                min-width: 30%;
-                max-width: 60%;
-                box-sizing: border-box;
                 padding: 11px;
                 border-radius: 10px;
                 border: none;
                 cursor: pointer;
                 font-weight: 600;
-                background-color: #CBD868 !important;
-                color: #555 !important;
+                background-color: #CBD868;
+                color: #555;
                 outline: none;
             }
             .mask-text {
@@ -627,15 +517,15 @@ async function loadApp(htmlContent, fileName = ""){
         shadow.getElementById("injOpenConfigBtn").addEventListener("click", function() {
             popup.style.display = "none";
             if (typeof config !== 'undefined') {
-                textArea.value = `const config = {\n` +
-                    `    startURL: "${config.startURL || ""}",\n` +
-                    `    portrait: ${config.portrait},\n` +
-                    `    screenOn: ${config.screenOn},\n` +
-                    `    allowZoom: ${config.allowZoom},\n` +
-                    `    forceDark: ${config.forceDark},\n` +
-                    `    broAgent: "${config.broAgent || ""}",\n` +
-                    `    external: ${JSON.stringify(config.external || [], null, 4)}\n` +
-                    `};`;
+                textArea.value = \`const config = {\n\` +
+                    \`    startURL: "\${config.startURL || ""}",\n\` +
+                    \`    portrait: \${config.portrait},\n\` +
+                    \`    screenOn: \${config.screenOn},\n\` +
+                    \`    allowZoom: \${config.allowZoom},\n\` +
+                    \`    forceDark: \${config.forceDark},\n\` +
+                    \`    broAgent: "\${config.broAgent || ""}",\n\` +
+                    \`    external: \${JSON.stringify(config.external || [], null, 4)}\n\` +
+                    \`};\`;
             } else {
                 textArea.value = "// Nema učitane konfiguracije";
             }
@@ -734,11 +624,13 @@ async function loadApp(htmlContent, fileName = ""){
     document.close();
 }
 
+// Pokretanje pri startu aplikacije
 getSavedApp().then(saved => {
+    initPreferences();
     if(saved && saved.content){
         loadApp(saved.content, saved.name || "");
     } else {
-        showPopup();
+        mainPopup.style.display = "flex";
     }
 });
 
