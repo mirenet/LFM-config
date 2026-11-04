@@ -58,52 +58,49 @@ button:focus, button:active, input:focus {
 .popup-header {
     display: flex;
     align-items: center;
-    margin-top: -2px;
+    margin-top: -10px;
     margin-bottom: 20px;
     width: 100%;
-    position: relative;
-    height: 30px;
 }
 
 .popup h3{
     margin: 0;
+    margin-top: -0.8px;
+    margin-bottom: 4px;
     color: #CBD868;
     font-size: 17px;
     font-weight: 600;
-    width: 100%;
+    flex-grow: 1;
     text-align: center;
-    position: absolute;
-    left: 0;
-    right: 0;
-    pointer-events: none;
 }
 
-.config-icon-btn {
+.settings-icon-btn {
+    margin-top: 0px;
+    margin-left: -7px;
+    margin-right: 5px;
+    margin-bottom: 4px;
     background: none;
     border: none;
     color: #CBD868;
     cursor: pointer;
     border-radius: 6px;
+    flex-shrink: 0;
+    transition: background 0.15s;
+    outline: none;
     width: 30px;
     height: 30px;
     display: flex;
     align-items: center;
     justify-content: center;
-    position: absolute;
-    right: 0;
-    z-index: 2;
-    outline: none;
-    -webkit-tap-highlight-color: transparent;
-    transition: background 0.15s;
 }
 
-.config-icon-btn:hover {
+.settings-icon-btn:hover {
     background: rgba(203, 216, 104, 0.1);
 }
 
-.config-icon-btn svg {
-    width: 18px;
-    height: 18px;
+.settings-icon-btn svg {
+    width: 16.6px;
+    height: 16.6px;
     stroke: currentColor;
     stroke-width: 2;
     stroke-linecap: round;
@@ -190,7 +187,7 @@ button:focus, button:active, input:focus {
     transition: filter 0.15s, background 0.15s;
 }
 
-.row button:hover, .config-icon-btn:hover {
+.row button:hover, .settings-icon-btn:hover {
     filter: brightness(1.25);
     box-shadow: 0 3px 10px rgba(0,0,0,0.3);
 }
@@ -210,8 +207,9 @@ button:focus, button:active, input:focus {
 <!-- GLAVNI POPUP -->
 <div class="popup" id="mainPopup">
     <div class="popup-header">
+        <span style="width: 32px;"></span>
         <h3 id="popupTitle">Load Html</h3>
-        <button id="openConfigBtn" class="config-icon-btn" title="Edit config">
+        <button id="openConfigBtn" class="settings-icon-btn" title="Edit config">
             <svg viewBox="0 0 24 24">
                 <circle cx="12" cy="12" r="3"></circle>
                 <path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1 0 2.83 2 2 0 0 1-2.83 0l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-2 2 2 2 0 0 1-2-2v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 0 1-2.83 0 2 2 0 0 1 0-2.83l-.06-.06a1.65 1.65 0 0 0 .33-1.82 1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1-2-2 2 2 0 0 1 2-2h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 0 1 0-2.83 2 2 0 0 1 2.83 0l.06.06a1.65 1.65 0 0 0 1.82.33H9a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 2-2 2 2 0 0 1 2 2v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l-.06-.06a2 2 0 0 1 2.83 0 2 2 0 0 1 0 2.83l-.06-.06a1.65 1.65 0 0 0-.33 1.82V9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 2 2 2 2 0 0 1-2 2h-.09A1.65 1.65 0 0 0-1.51 1z"></path>
@@ -237,7 +235,9 @@ button:focus, button:active, input:focus {
 <!-- EDITOR MODAL -->
 <div class="popup" id="configModal">
     <div class="popup-header">
+        <span style="width: 32px;"></span>
         <h3>App Config</h3>
+        <span style="width: 30px;"></span>
     </div>
     <textarea id="configTextArea" style="width:100%; height:180px; background:#111; color:#CBD868; border:1.5px solid #555b35; border-radius:8px; padding:10px; font-family:monospace; font-size:12px; box-sizing:border-box; outline:none; resize:none;"></textarea>
     <div class="row" style="margin-top:14px;">
@@ -398,48 +398,45 @@ async function loadApp(htmlContent, fileName = ""){
             .popup-header {
                 display: flex;
                 align-items: center;
-                margin-top: -2px;
+                margin-top: -10px;
                 margin-bottom: 20px;
                 width: 100%;
-                position: relative;
-                height: 30px;
             }
             .popup h3 {
                 margin: 0;
+                margin-top: -0.8px;
+                margin-bottom: 4px;
                 color: #CBD868;
                 font-size: 17px;
                 font-weight: 600;
-                width: 100%;
+                flex-grow: 1;
                 text-align: center;
-                position: absolute;
-                left: 0;
-                right: 0;
-                pointer-events: none;
             }
-            .config-icon-btn {
+            .settings-icon-btn {
+                margin-top: 0px;
+                margin-left: -7px;
+                margin-right: 5px;
+                margin-bottom: 4px;
                 background: none;
                 border: none;
                 color: #CBD868;
                 cursor: pointer;
                 border-radius: 6px;
+                flex-shrink: 0;
+                transition: background 0.15s;
+                outline: none;
                 width: 30px;
                 height: 30px;
                 display: flex;
                 align-items: center;
                 justify-content: center;
-                position: absolute;
-                right: 0;
-                z-index: 2;
-                outline: none;
-                -webkit-tap-highlight-color: transparent;
-                transition: background 0.15s;
             }
-            .config-icon-btn:hover {
+            .settings-icon-btn:hover {
                 background: rgba(203, 216, 104, 0.1);
             }
-            .config-icon-btn svg {
-                width: 18px;
-                height: 18px;
+            .settings-icon-btn svg {
+                width: 16.6px;
+                height: 16.6px;
                 stroke: currentColor;
                 stroke-width: 2;
                 stroke-linecap: round;
@@ -517,7 +514,7 @@ async function loadApp(htmlContent, fileName = ""){
                 -webkit-tap-highlight-color: transparent;
                 transition: filter 0.15s, background 0.15s;
             }
-            .row button:hover, .config-icon-btn:hover {
+            .row button:hover, .settings-icon-btn:hover {
                 filter: brightness(1.25);
                 box-shadow: 0 3px 10px rgba(0,0,0,0.3);
             }
@@ -529,8 +526,9 @@ async function loadApp(htmlContent, fileName = ""){
 
         <div id="injectedPopup" class="popup">
             <div class="popup-header">
+                <span style="width: 32px;"></span>
                 <h3>Load Html</h3>
-                <button id="injOpenConfigBtn" class="config-icon-btn" title="Edit config">
+                <button id="injOpenConfigBtn" class="settings-icon-btn" title="Edit config">
                     <svg viewBox="0 0 24 24">
                         <circle cx="12" cy="12" r="3"></circle>
                         <path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1 0 2.83 2 2 0 0 1-2.83 0l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-2 2 2 2 0 0 1-2-2v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 0 1-2.83 0 2 2 0 0 1 0-2.83l-.06-.06a1.65 1.65 0 0 0 .33-1.82 1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1-2-2 2 2 0 0 1 2-2h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 0 1 0-2.83 2 2 0 0 1 2.83 0l.06.06a1.65 1.65 0 0 0 1.82.33H9a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 2-2 2 2 0 0 1 2 2v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l-.06-.06a2 2 0 0 1 2.83 0 2 2 0 0 1 0 2.83l-.06-.06a1.65 1.65 0 0 0-.33 1.82V9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 2 2 2 2 0 0 1-2 2h-.09A1.65 1.65 0 0 0-1.51 1z"></path>
@@ -551,7 +549,9 @@ async function loadApp(htmlContent, fileName = ""){
 
         <div id="injectedConfigModal" class="popup">
             <div class="popup-header">
+                <span style="width: 32px;"></span>
                 <h3>App Config</h3>
+                <span style="width: 30px;"></span>
             </div>
             <textarea id="injConfigTextArea" style="width:100%; height:180px; background:#111; color:#CBD868; border:1.5px solid #555b35; border-radius:8px; padding:10px; font-family:monospace; font-size:12px; box-sizing:border-box; outline:none; resize:none;"></textarea>
             <div class="row" style="margin-top:14px;">
