@@ -265,7 +265,6 @@ public class MainActivity extends AppCompatActivity {
             public WebResourceResponse shouldInterceptRequest(WebView view, WebResourceRequest request) {
                 String urlStr = request.getUrl().toString();
                 
-                // Serviramo appConfig.js direktno iz internog skladišta aplikacije
                 if (urlStr.endsWith("appConfig.js")) {
                     try {
                         File configFile = new File(getFilesDir(), "appConfig.js");
@@ -422,12 +421,9 @@ public class MainActivity extends AppCompatActivity {
         }
     }
 
-    // --- BEZBEDNO UČITAVANJE I KOPIRANJE appConfig.js ---
-
     private void loadConfigFromInternalStorage() {
         File configFile = new File(getFilesDir(), "appConfig.js");
         
-        // Ako fajl ne postoji, automatski se kopira iz assets-a u interno skladište
         if (!configFile.exists()) {
             copyAssetToFile("appConfig.js", configFile);
         }
@@ -470,12 +466,28 @@ public class MainActivity extends AppCompatActivity {
         } catch (Exception ignored) {}
     }
 
-    // --- JAVASCRIPT BRIDGE ZA SNIMANJE I RESTART ---
-
     @Keep
     public static class ConfigSaverInterface {
         Context mContext;
         ConfigSaverInterface(Context c) { mContext = c; }
+
+        @Keep
+        @JavascriptInterface
+        public String loadConfigFileRaw() {
+            try {
+                File configFile = new File(mContext.getFilesDir(), "appConfig.js");
+                if (!configFile.exists()) {
+                    return "// Fajl ne postoji";
+                }
+                try (FileInputStream fis = new FileInputStream(configFile)) {
+                    byte[] buffer = new byte[(int) configFile.length()];
+                    fis.read(buffer);
+                    return new String(buffer, "UTF-8");
+                }
+            } catch (Exception e) {
+                return "// Greška pri čitanju: " + e.getMessage();
+            }
+        }
 
         @Keep
         @JavascriptInterface
