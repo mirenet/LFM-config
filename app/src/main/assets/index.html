@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no, viewport-fit=cover">
-<title>Loader</title>
+<title>Loader UI</title>
 
 <!-- Učitavanje konfiguracije -->
 <script src="appConfig.js"></script>
@@ -12,6 +12,8 @@
 :root{
     --main-background: #070707;
     --btn-accent: #CBD868;
+    --btn-hover: #A4A25C;
+    --btn-active: #8C7F6F;
 }
 
 html, body{
@@ -26,6 +28,14 @@ html, body{
     user-select: none;    
 }
 
+button, input {
+    -webkit-tap-highlight-color: transparent;
+}
+
+button:focus, button:active, input:focus {
+    outline: none;
+}
+
 .popup{
     display: none;
     flex-direction: column;
@@ -37,58 +47,66 @@ html, body{
     width: calc(100% - 32px);
     max-width: 340px;
     background: #1a1a1c;
-    border-radius: 12px;
+    border-radius: 10px;
     border: none;
-    padding: 22px 18px 24px 18px; /* Malo više prostora na dnu */
+    padding: 22px 18px;
     box-shadow: 0 0 0 0.9px #7C874F;
     box-sizing: border-box;
+    overflow: hidden;
+    word-wrap: break-word;
     z-index: 1000;
+}
+
+.popup.active {
+    display: flex;
 }
 
 .popup-header {
     display: flex;
     align-items: center;
-    margin-top: -2px;
+    margin-top: -10px;
     margin-bottom: 20px;
     width: 100%;
-    position: relative;
-    height: 30px;
 }
 
 .popup h3{
     margin: 0;
+    margin-top: -0.8px;
+    margin-bottom: 4px;
     color: #CBD868;
     font-size: 17px;
     font-weight: 600;
-    width: 100%;
+    flex-grow: 1;
     text-align: center;
-    position: absolute;
-    left: 0;
-    right: 0;
-    pointer-events: none;
 }
 
-.config-icon-btn {
+.settings-icon-btn {
+    margin-top: 0px;
+    margin-left: -7px;
+    margin-right: 5px;
+    margin-bottom: 4px;
     background: none;
     border: none;
     color: #CBD868;
     cursor: pointer;
     border-radius: 6px;
+    flex-shrink: 0;
+    transition: background 0.15s;
+    outline: none;
     width: 30px;
     height: 30px;
     display: flex;
     align-items: center;
     justify-content: center;
-    position: absolute;
-    right: 0;
-    z-index: 2;
-    outline: none;
-    -webkit-tap-highlight-color: transparent;
 }
 
-.config-icon-btn svg {
-    width: 18px;
-    height: 18px;
+.settings-icon-btn:hover {
+    background: rgba(203, 216, 104, 0.1);
+}
+
+.settings-icon-btn svg {
+    width: 16.6px;
+    height: 16.6px;
     stroke: currentColor;
     stroke-width: 2;
     stroke-linecap: round;
@@ -96,12 +114,49 @@ html, body{
     fill: none;
 }
 
-.checkbox-row {
-    margin: 12px 0 0 4px;
+.close-settings-icon-btn {
+    background: none;
+    border: none;
+    color: #CBD868;
+    cursor: pointer;
+    border-radius: 6px;
+    width: 34px;
+    height: 34px;
     display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-shrink: 0;
+    transition: background 0.15s;
+    outline: none;
+    margin-top: -10px;
+}
+
+.close-settings-icon-btn:hover {
+    background: rgba(203, 216, 104, 0.1);
+}
+
+.close-settings-icon-btn svg {
+    width: 20px;
+    height: 20px;
+    stroke: currentColor;
+    stroke-width: 2.5;
+    stroke-linecap: round;
+    stroke-linejoin: round;
+}
+
+.checkbox-row {
+    -webkit-tap-highlight-color: transparent;
+    appearance: none;
+    margin: 8px 0 0px 2px;
+    display: flex;
+    justify-content: flex-start;
     align-items: center;
     color: #DADADA;
     font-size: 14px;
+    text-align: left;
+    min-height: 22px;
+    box-sizing: border-box;
+    width: 100%;
 }
 
 .checkbox-row label {
@@ -111,6 +166,8 @@ html, body{
     display: flex;
     align-items: center;
     gap: 11px;
+    user-select: none;
+    text-align: left;
 }
 
 .checkbox-row label input[type="checkbox"] {
@@ -127,6 +184,23 @@ html, body{
     display: inline-flex;
     align-items: center;
     justify-content: center;
+    transition: filter 0.15s, background-color 0.15s, border-color 0.15s;
+    position: relative;
+    box-sizing: border-box;
+    flex-shrink: 0;
+}
+
+.checkbox-row label input[type="checkbox"]::after {
+    content: "";
+    width: 3px;
+    height: 8px;
+    border: solid #555;
+    border-width: 0 2px 2px 0;
+    transform: rotate(40deg) scale(0);
+    transition: transform 0.15s ease-in-out;
+    position: relative;
+    top: -1px;
+    filter: brightness(0); 
 }
 
 .checkbox-row label input[type="checkbox"]:checked {
@@ -134,24 +208,38 @@ html, body{
     border-color: var(--btn-accent);
 }
 
+.checkbox-row label input[type="checkbox"]:checked::after {
+    transform: rotate(40deg) scale(1);
+}
+
 .row{
     display: flex;
+    flex-wrap: wrap;
     gap: 12px;
     justify-content: center;
-    margin-top: 18px;
+    margin-top: 16px;
 }
 
 .row button{
     flex: 1 1 0;
+    width: 0;
+    min-width: 30%;
+    max-width: 60%;
+    box-sizing: border-box;
     padding: 11px;
     border-radius: 10px;
     border: none;
     cursor: pointer;
     font-weight: 600;
-    background-color: var(--btn-accent);
-    color: #555;
+    background-color: var(--btn-accent) !important;
+    color: #555 !important;
+    transition: filter 0.15s, background 0.15s;
     outline: none;
-    -webkit-tap-highlight-color: transparent;
+}
+
+.row button:hover, .settings-icon-btn:hover{
+    filter: brightness(1.25);
+    box-shadow: 0 3px 10px rgba(0,0,0,0.3);
 }
 
 .mask-text{
@@ -167,10 +255,11 @@ html, body{
 <body>
 
 <!-- GLAVNI POPUP -->
-<div class="popup" id="mainPopup">
+<div id="mainPopup" class="popup active">
     <div class="popup-header">
+        <span style="width: 32px;"></span>
         <h3 id="popupTitle">Load Html</h3>
-        <button id="openConfigBtn" class="config-icon-btn" title="Edit config">
+        <button id="openSettingsBtn" class="settings-icon-btn" title="Edit config">
             <svg viewBox="0 0 24 24">
                 <circle cx="12" cy="12" r="3"></circle>
                 <path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1 0 2.83 2 2 0 0 1-2.83 0l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-2 2 2 2 0 0 1-2-2v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 0 1-2.83 0 2 2 0 0 1 0-2.83l-.06-.06a1.65 1.65 0 0 0 .33-1.82 1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1-2-2 2 2 0 0 1 2-2h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 0 1 0-2.83 2 2 0 0 1 2.83 0l.06.06a1.65 1.65 0 0 0 1.82.33H9a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 2-2 2 2 0 0 1 2 2v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l-.06-.06a2 2 0 0 1 2.83 0 2 2 0 0 1 0 2.83l-.06-.06a1.65 1.65 0 0 0-.33 1.82V9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 2 2 2 2 0 0 1-2 2h-.09A1.65 1.65 0 0 0-1.51 1z"></path>
@@ -178,7 +267,7 @@ html, body{
         </button>
     </div>
     
-    <div id="checkboxContainer" class="checkbox-row">
+    <div class="checkbox-row">
         <label>
             <input type="checkbox" id="clearDataCheckbox">
             <span>Clear local cache and data</span>
@@ -194,14 +283,18 @@ html, body{
 </div>
 
 <!-- EDITOR MODAL -->
-<div class="popup" id="configModal">
-    <div class="popup-header">
-        <h3>App Config</h3>
+<div id="settingsPopup" class="popup">
+    <div style="display: flex; justify-content: space-between; align-items: center; margin: 3px 0 14px 4px;">
+        <h3 style="text-align: left; margin: 0;">App Config</h3>
+        <button id="closeSettingsBtn" class="close-settings-icon-btn" title="Back">
+            <svg viewBox="0 0 24 24" fill="none">
+                <path d="M18 6L6 18M6 6l12 12"/>
+            </svg>
+        </button>
     </div>
     <textarea id="configTextArea" style="width:100%; height:180px; background:#111; color:#CBD868; border:1.5px solid #555b35; border-radius:8px; padding:10px; font-family:monospace; font-size:12px; box-sizing:border-box; outline:none; resize:none;"></textarea>
     <div class="row" style="margin-top:14px;">
         <button id="saveConfigBtn"><span class="mask-text">Save</span></button>
-        <button id="closeConfigBtn"><span class="mask-text">Close</span></button>
     </div>
 </div>
 
@@ -280,23 +373,23 @@ async function initPreferences() {
     });
 }
 
-const configModal = document.getElementById("configModal");
 const mainPopup = document.getElementById("mainPopup");
+const settingsPopup = document.getElementById("settingsPopup");
 const configTextArea = document.getElementById("configTextArea");
 
-document.getElementById("openConfigBtn").addEventListener("click", () => {
-    mainPopup.style.display = "none";
+document.getElementById("openSettingsBtn").addEventListener("click", () => {
+    mainPopup.classList.remove("active");
     if (window.AndroidBridgeSaver && typeof window.AndroidBridgeSaver.loadConfigFileRaw === 'function') {
         configTextArea.value = window.AndroidBridgeSaver.loadConfigFileRaw();
     } else {
         configTextArea.value = "// Bridge nije dostupan";
     }
-    configModal.style.display = "flex";
+    settingsPopup.classList.add("active");
 });
 
-document.getElementById("closeConfigBtn").addEventListener("click", () => {
-    configModal.style.display = "none";
-    mainPopup.style.display = "flex";
+document.getElementById("closeSettingsBtn").addEventListener("click", () => {
+    settingsPopup.classList.remove("active");
+    mainPopup.classList.add("active");
 });
 
 document.getElementById("saveConfigBtn").addEventListener("click", () => {
@@ -310,7 +403,7 @@ document.getElementById("saveConfigBtn").addEventListener("click", () => {
 
 // Funkcija za učitavanje sačuvane aplikacije
 async function loadApp(htmlContent, fileName = ""){
-    mainPopup.style.display = "none";
+    mainPopup.classList.remove("active");
 
     const customPopupScript = `
     <script>
@@ -322,6 +415,18 @@ async function loadApp(htmlContent, fileName = ""){
 
         shadow.innerHTML = \`
         <style>
+            :root{
+                --main-background: #070707;
+                --btn-accent: #CBD868;
+                --btn-hover: #A4A25C;
+                --btn-active: #8C7F6F;
+            }
+            button, input {
+                -webkit-tap-highlight-color: transparent;
+            }
+            button:focus, button:active, input:focus {
+                outline: none;
+            }
             .popup {
                 display: none;
                 flex-direction: column;
@@ -333,68 +438,108 @@ async function loadApp(htmlContent, fileName = ""){
                 width: calc(100% - 32px);
                 max-width: 340px;
                 background: #1a1a1c;
-                border-radius: 12px;
+                border-radius: 10px;
                 border: none;
-                padding: 22px 18px 24px 18px;
+                padding: 22px 18px;
                 box-shadow: 0 0 0 0.9px #7C874F;
                 box-sizing: border-box;
+                overflow: hidden;
+                word-wrap: break-word;
                 z-index: 2147483647;
                 font-family: Inter, Arial, sans-serif;
                 user-select: none;
             }
+            .popup.active {
+                display: flex;
+            }
             .popup-header {
                 display: flex;
                 align-items: center;
-                margin-top: -2px;
+                margin-top: -10px;
                 margin-bottom: 20px;
                 width: 100%;
-                position: relative;
-                height: 30px;
             }
             .popup h3 {
                 margin: 0;
+                margin-top: -0.8px;
+                margin-bottom: 4px;
                 color: #CBD868;
                 font-size: 17px;
                 font-weight: 600;
-                width: 100%;
+                flex-grow: 1;
                 text-align: center;
-                position: absolute;
-                left: 0;
-                right: 0;
-                pointer-events: none;
             }
-            .config-icon-btn {
+            .settings-icon-btn {
+                margin-top: 0px;
+                margin-left: -7px;
+                margin-right: 5px;
+                margin-bottom: 4px;
                 background: none;
                 border: none;
                 color: #CBD868;
                 cursor: pointer;
                 border-radius: 6px;
+                flex-shrink: 0;
+                transition: background 0.15s;
+                outline: none;
                 width: 30px;
                 height: 30px;
                 display: flex;
                 align-items: center;
                 justify-content: center;
-                position: absolute;
-                right: 0;
-                z-index: 2;
-                outline: none;
-                -webkit-tap-highlight-color: transparent;
             }
-            .config-icon-btn svg {
-                width: 18px;
-                height: 18px;
+            .settings-icon-btn:hover {
+                background: rgba(203, 216, 104, 0.1);
+            }
+            .settings-icon-btn svg {
+                width: 16.6px;
+                height: 16.6px;
                 stroke: currentColor;
                 stroke-width: 2;
                 stroke-linecap: round;
                 stroke-linejoin: round;
                 fill: none;
             }
-            .checkbox-row {
-                margin: 12px 0 0 4px;
+            .close-settings-icon-btn {
+                background: none;
+                border: none;
+                color: #CBD868;
+                cursor: pointer;
+                border-radius: 6px;
+                width: 34px;
+                height: 34px;
                 display: flex;
+                align-items: center;
+                justify-content: center;
+                flex-shrink: 0;
+                transition: background 0.15s;
+                outline: none;
+                margin-top: -10px;
+            }
+            .close-settings-icon-btn:hover {
+                background: rgba(203, 216, 104, 0.1);
+            }
+            .close-settings-icon-btn svg {
+                width: 20px;
+                height: 20px;
+                stroke: currentColor;
+                stroke-width: 2.5;
+                stroke-linecap: round;
+                stroke-linejoin: round;
+            }
+            .checkbox-row {
+                -webkit-tap-highlight-color: transparent;
+                appearance: none;
+                margin: 8px 0 0px 2px;
+                display: flex;
+                justify-content: flex-start;
                 align-items: center;
                 color: #DADADA;
                 font-size: 14px;
+                text-align: left;
+                min-height: 22px;
+                box-sizing: border-box;
+                width: 100%;
             }
             .checkbox-row label {
                 color: #DADADA;
@@ -403,6 +548,8 @@ async function loadApp(htmlContent, fileName = ""){
                 display: flex;
                 align-items: center;
                 gap: 11px;
+                user-select: none;
+                text-align: left;
             }
             .checkbox-row label input[type="checkbox"] {
                 appearance: none;
@@ -418,28 +565,56 @@ async function loadApp(htmlContent, fileName = ""){
                 display: inline-flex;
                 align-items: center;
                 justify-content: center;
+                transition: filter 0.15s, background-color 0.15s, border-color 0.15s;
+                position: relative;
+                box-sizing: border-box;
+                flex-shrink: 0;
+            }
+            .checkbox-row label input[type="checkbox"]::after {
+                content: "";
+                width: 3px;
+                height: 8px;
+                border: solid #555;
+                border-width: 0 2px 2px 0;
+                transform: rotate(40deg) scale(0);
+                transition: transform 0.15s ease-in-out;
+                position: relative;
+                top: -1px;
+                filter: brightness(0); 
             }
             .checkbox-row label input[type="checkbox"]:checked {
                 background-color: #CBD868;
                 border-color: #CBD868;
             }
+            .checkbox-row label input[type="checkbox"]:checked::after {
+                transform: rotate(40deg) scale(1);
+            }
             .row {
                 display: flex;
+                flex-wrap: wrap;
                 gap: 12px;
                 justify-content: center;
-                margin-top: 18px;
+                margin-top: 16px;
             }
             .row button {
                 flex: 1 1 0;
+                width: 0;
+                min-width: 30%;
+                max-width: 60%;
+                box-sizing: border-box;
                 padding: 11px;
                 border-radius: 10px;
                 border: none;
                 cursor: pointer;
                 font-weight: 600;
-                background-color: #CBD868;
-                color: #555;
+                background-color: #CBD868 !important;
+                color: #555 !important;
+                transition: filter 0.15s, background 0.15s;
                 outline: none;
-                -webkit-tap-highlight-color: transparent;
+            }
+            .row button:hover, .settings-icon-btn:hover {
+                filter: brightness(1.25);
+                box-shadow: 0 3px 10px rgba(0,0,0,0.3);
             }
             .mask-text {
                 color: #555;
@@ -447,10 +622,11 @@ async function loadApp(htmlContent, fileName = ""){
             }
         </style>
 
-        <div id="injectedPopup" class="popup">
+        <div id="injectedPopup" class="popup active">
             <div class="popup-header">
+                <span style="width: 32px;"></span>
                 <h3>Load Html</h3>
-                <button id="injOpenConfigBtn" class="config-icon-btn" title="Edit config">
+                <button id="injOpenSettingsBtn" class="settings-icon-btn" title="Edit config">
                     <svg viewBox="0 0 24 24">
                         <circle cx="12" cy="12" r="3"></circle>
                         <path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1 0 2.83 2 2 0 0 1-2.83 0l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-2 2 2 2 0 0 1-2-2v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 0 1-2.83 0 2 2 0 0 1 0-2.83l-.06-.06a1.65 1.65 0 0 0 .33-1.82 1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1-2-2 2 2 0 0 1 2-2h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 0 1 0-2.83 2 2 0 0 1 2.83 0l.06.06a1.65 1.65 0 0 0 1.82.33H9a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 2-2 2 2 0 0 1 2 2v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l-.06-.06a2 2 0 0 1 2.83 0 2 2 0 0 1 0 2.83l-.06-.06a1.65 1.65 0 0 0-.33 1.82V9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 2 2 2 2 0 0 1-2 2h-.09A1.65 1.65 0 0 0-1.51 1z"></path>
@@ -469,14 +645,18 @@ async function loadApp(htmlContent, fileName = ""){
             </div>
         </div>
 
-        <div id="injectedConfigModal" class="popup">
-            <div class="popup-header">
-                <h3>App Config</h3>
+        <div id="injectedSettingsPopup" class="popup">
+            <div style="display: flex; justify-content: space-between; align-items: center; margin: 3px 0 14px 4px;">
+                <h3 style="text-align: left; margin: 0;">App Config</h3>
+                <button id="injCloseSettingsBtn" class="close-settings-icon-btn" title="Back">
+                    <svg viewBox="0 0 24 24" fill="none">
+                        <path d="M18 6L6 18M6 6l12 12"/>
+                    </svg>
+                </button>
             </div>
             <textarea id="injConfigTextArea" style="width:100%; height:180px; background:#111; color:#CBD868; border:1.5px solid #555b35; border-radius:8px; padding:10px; font-family:monospace; font-size:12px; box-sizing:border-box; outline:none; resize:none;"></textarea>
             <div class="row" style="margin-top:14px;">
                 <button id="injSaveConfigBtn"><span class="mask-text">Save</span></button>
-                <button id="injCloseConfigBtn"><span class="mask-text">Close</span></button>
             </div>
         </div>
         \`;
@@ -484,7 +664,7 @@ async function loadApp(htmlContent, fileName = ""){
         let tapCount = 0;
         let tapTimeout = null;
         const popup = shadow.getElementById("injectedPopup");
-        const configModal = shadow.getElementById("injectedConfigModal");
+        const settingsPopup = shadow.getElementById("injectedSettingsPopup");
         const clearCheckbox = shadow.getElementById("injectedClearDataCheckbox");
         const textArea = shadow.getElementById("injConfigTextArea");
 
@@ -516,19 +696,19 @@ async function loadApp(htmlContent, fileName = ""){
             };
         });
 
-        shadow.getElementById("injOpenConfigBtn").addEventListener("click", function() {
-            popup.style.display = "none";
+        shadow.getElementById("injOpenSettingsBtn").addEventListener("click", function() {
+            popup.classList.remove("active");
             if (window.AndroidBridgeSaver && typeof window.AndroidBridgeSaver.loadConfigFileRaw === 'function') {
                 textArea.value = window.AndroidBridgeSaver.loadConfigFileRaw();
             } else {
                 textArea.value = "// Bridge nije dostupan";
             }
-            configModal.style.display = "flex";
+            settingsPopup.classList.add("active");
         });
 
-        shadow.getElementById("injCloseConfigBtn").addEventListener("click", function() {
-            configModal.style.display = "none";
-            popup.style.display = "flex";
+        shadow.getElementById("injCloseSettingsBtn").addEventListener("click", function() {
+            settingsPopup.classList.remove("active");
+            popup.classList.add("active");
         });
 
         shadow.getElementById("injSaveConfigBtn").addEventListener("click", function() {
@@ -541,21 +721,21 @@ async function loadApp(htmlContent, fileName = ""){
         });
 
         document.addEventListener("touchstart", function(e) {
-            if (popup.style.display === "flex" || configModal.style.display === "flex") return;
+            if (popup.classList.contains("active") || settingsPopup.classList.contains("active")) return;
             if (e.touches.length > 1) { tapCount = 0; return; }
             tapCount++;
             if (tapTimeout) clearTimeout(tapTimeout);
             if (tapCount >= 6) {
                 tapCount = 0;
-                configModal.style.display = "none";
-                popup.style.display = "flex";
+                settingsPopup.classList.remove("active");
+                popup.classList.add("active");
             } else {
                 tapTimeout = setTimeout(() => { tapCount = 0; }, 350);
             }
         }, { capture: true, passive: true });
 
         shadow.getElementById("injectedCancelBtn").addEventListener("click", function() {
-            popup.style.display = "none";
+            popup.classList.remove("active");
         });
 
         shadow.getElementById("injectedLoadBtn").addEventListener("click", function() {
@@ -624,7 +804,7 @@ getSavedApp().then(saved => {
     if(saved && saved.content){
         loadApp(saved.content, saved.name || "");
     } else {
-        mainPopup.style.display = "flex";
+        mainPopup.classList.add("active");
     }
 });
 
