@@ -2,6 +2,7 @@ package com.webhtml.app;
 
 import android.annotation.SuppressLint;
 import android.app.Activity;
+import android.content.Context;
 import android.content.Intent;
 import android.content.pm.ActivityInfo;
 import android.graphics.Color;
@@ -10,6 +11,7 @@ import android.os.Bundle;
 import android.view.WindowManager;
 import android.webkit.CookieManager;
 import android.webkit.GeolocationPermissions;
+import android.webkit.JavascriptInterface;
 import android.webkit.JsResult;
 import android.webkit.PermissionRequest;
 import android.webkit.ValueCallback;
@@ -23,7 +25,11 @@ import androidx.appcompat.app.AppCompatActivity;
 import androidx.webkit.WebSettingsCompat;
 import androidx.webkit.WebViewFeature;
 
+import java.io.File;
+import java.io.FileInputStream;
+import java.io.FileOutputStream;
 import java.io.InputStream;
+import java.io.OutputStream;
 import java.net.HttpURLConnection;
 import java.net.URL;
 import java.net.URLDecoder;
@@ -34,7 +40,6 @@ import java.util.regex.Pattern;
 
 public class MainActivity extends AppCompatActivity {
 
-    // --- DINAMIČKE PROMENLJIVE IZ appConfig.js ---
     private List<String> externalDomains = new ArrayList<>();
     private String startURL = "";
     private String broAgent = "";
@@ -48,7 +53,6 @@ public class MainActivity extends AppCompatActivity {
     private final static int FILE_CHOOSER_RESULT_CODE = 1;
     private DownloadHelper downloadHelper;
 
-    // Kodovi i promenljive za sistemske dozvole u hodu
     private final static int LOCATION_PERMISSION_REQUEST_CODE = 100;
     private final static int MEDIA_PERMISSION_REQUEST_CODE = 101;
     
@@ -59,10 +63,9 @@ public class MainActivity extends AppCompatActivity {
     @SuppressLint({"SetJavaScriptEnabled", "QueryPermissionsNeeded"})
     @Override
     protected void onCreate(Bundle savedInstanceState) {
-        // 1. PRVO UČITAVAMO KONFIGURACIJU IZ ASSETS/appConfig.js
-        loadConfigFromAssets();
+        // 1. Provera, kopiranje i čitanje konfiguracije iz internog skladišta (sa zaštitom)
+        loadConfigFromInternalStorage();
 
-        // Primena tamnog režima u zavisnosti od konfiguracije
         if (forceDark) {
             androidx.appcompat.app.AppCompatDelegate.setDefaultNightMode(
                 androidx.appcompat.app.AppCompatDelegate.MODE_NIGHT_YES
@@ -71,12 +74,10 @@ public class MainActivity extends AppCompatActivity {
 
         super.onCreate(savedInstanceState);
 
-        // 2. Primena portrait podešavanja
         if (portrait) {
             setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_PORTRAIT);
         }
 
-        // 3. Primena screenOn podešavanja
         if (screenOn) {
             getWindow().addFlags(WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON);
         }
@@ -85,7 +86,6 @@ public class MainActivity extends AppCompatActivity {
         webView.setBackgroundColor(Color.parseColor("#070707"));
         setContentView(webView);
 
-        // Inicijalizujemo DownloadHelper
         downloadHelper = new DownloadHelper(this);
 
         WebSettings webSettings = webView.getSettings();
@@ -101,19 +101,16 @@ public class MainActivity extends AppCompatActivity {
         webSettings.setSupportMultipleWindows(false);
         webSettings.setJavaScriptCanOpenWindowsAutomatically(true);
 
-        // 4. Primena allowZoom podešavanja (Standardni zoom sa dva prsta)
         webSettings.setSupportZoom(allowZoom);
         webSettings.setBuiltInZoomControls(allowZoom);
         webSettings.setDisplayZoomControls(false);
         webSettings.setLoadWithOverviewMode(true);
         webSettings.setUseWideViewPort(true);
 
-        // 5. Primena broAgent podešavanja (ako nije prazan)
         if (broAgent != null && !broAgent.trim().isEmpty()) {
             webSettings.setUserAgentString(broAgent);
         }
 
-        // 6. Najsavremeniji metod za automatsko tamno prebacivanje (Algorithmic Darkening)
         if (forceDark) {
             if (WebViewFeature.isFeatureSupported(WebViewFeature.ALGORITHMIC_DARKENING)) {
                 WebSettingsCompat.setAlgorithmicDarkeningAllowed(webSettings, true);
@@ -124,14 +121,13 @@ public class MainActivity extends AppCompatActivity {
             }
         }
 
-        // Omogućavanje kolačića i kolačića treće strane
         CookieManager.getInstance().setAcceptCookie(true);
         CookieManager.getInstance().setAcceptThirdPartyCookies(webView, true);
 
-        // Registrujemo DownloadHelper kao JavaScript Bridge
+        // Registracija JavaScript bridge-eva
         webView.addJavascriptInterface(downloadHelper, "AndroidBridge");
+        webView.addJavascriptInterface(new ConfigSaverInterface(this), "AndroidBridgeSaver");
 
-        // Moderno upravljanje dugmetom nazad (OnBackPressedDispatcher)
         getOnBackPressedDispatcher().addCallback(this, new androidx.activity.OnBackPressedCallback(true) {
             @Override
             public void handleOnBackPressed() {
@@ -181,8 +177,7 @@ public class MainActivity extends AppCompatActivity {
         webView.setWebViewClient(new WebViewClient() {
             @Override
             public boolean shouldOverrideUrlLoading(WebView view, WebResourceRequest request) {
-                String url = request.getUrl().toString();
-                return handleUrlLoading(view, url);
+                return handleUrlLoading(view, request.getUrl().toString());
             }
 
             @Override
@@ -191,7 +186,6 @@ public class MainActivity extends AppCompatActivity {
             }
 
             private boolean handleUrlLoading(WebView view, String url) {
-                // Provera da li je link eksterni na osnovu external liste iz appConfig.js
                 if (isExternalDomain(url)) {
                     try {
                         Intent intent = new Intent(Intent.ACTION_VIEW, Uri.parse(url));
@@ -269,6 +263,18 @@ public class MainActivity extends AppCompatActivity {
             @Override
             public WebResourceResponse shouldInterceptRequest(WebView view, WebResourceRequest request) {
                 String urlStr = request.getUrl().toString();
+                
+                // KLJUČNO: Serviramo appConfig.js direktno iz internog skladišta aplikacije
+                if (urlStr.endsWith("appConfig.js")) {
+                    try {
+                        File configFile = new File(getFilesDir(), "appConfig.js");
+                        if (configFile.exists()) {
+                            InputStream targetStream = new FileInputStream(configFile);
+                            return new WebResourceResponse("application/javascript", "UTF-8", targetStream);
+                        }
+                    } catch (Exception ignored) {}
+                }
+
                 if (!urlStr.contains("#")) {
                     return super.shouldInterceptRequest(view, request);
                 }
@@ -278,7 +284,6 @@ public class MainActivity extends AppCompatActivity {
                     String cleanUrlStr = mainParts[0];
                     String fragment = mainParts[1];
 
-                    // Pronalaženje "ua" parametra iz fragmenta
                     String customUa = "";
                     if (fragment.contains("ua=")) {
                         try {
@@ -289,7 +294,6 @@ public class MainActivity extends AppCompatActivity {
                         } catch (Exception ignored) {}
                     }
 
-                    // Određivanje finalnog User-Agent-a
                     String finalUa;
                     if (!customUa.isEmpty() && customUa.length() < 300) {
                         finalUa = customUa;
@@ -297,12 +301,8 @@ public class MainActivity extends AppCompatActivity {
                         finalUa = (!broAgent.isEmpty()) ? broAgent : webView.getSettings().getUserAgentString();
                     }
 
-                    // Pametna detekcija moda na osnovu user-agent stringa:
-                    // Pošto svi standardni browseri (Mac, Windows, iPhone, Android, tablet...) počinju sa "Mozilla",
-                    // ukoliko string sadrži "mozilla", to je HTML mod. Sve ostalo je API mod.
                     String lowerUa = finalUa.toLowerCase();
                     boolean isHtmlMode = lowerUa.contains("mozilla");
-                    boolean isApiMode = !isHtmlMode;
 
                     URL url = new URL(cleanUrlStr);
                     HttpURLConnection connection = (HttpURLConnection) url.openConnection();
@@ -313,10 +313,6 @@ public class MainActivity extends AppCompatActivity {
                         connection.setRequestProperty("Accept", "text/html,application/xhtml+xml,application/xml;q=0.9,image/avif,image/webp,image/apng,*/*;q=0.8");
                         connection.setRequestProperty("Accept-Language", "en-US,en;q=0.9");
                         connection.setRequestProperty("Upgrade-Insecure-Requests", "1");
-                        connection.setRequestProperty("Sec-Fetch-Site", "none");
-                        connection.setRequestProperty("Sec-Fetch-Mode", "navigate");
-                        connection.setRequestProperty("Sec-Fetch-User", "?1");
-                        connection.setRequestProperty("Sec-Fetch-Dest", "document");
                     } else {
                         connection.setRequestProperty("Accept", "application/json, application/ld+json, text/plain, */*");
                     }
@@ -418,38 +414,29 @@ public class MainActivity extends AppCompatActivity {
             }
         });
 
-        // 7. Pokretanje na osnovu startURL parametra iz appConfig.js ili intenta
-        Intent intent = getIntent();
-        Uri data = intent != null ? intent.getData() : null;
-
-        if (data != null) {
-            String targetUrl = data.getQueryParameter("url");
-            if (targetUrl != null && !targetUrl.isEmpty()) {
-                webView.loadUrl(targetUrl);
-            } else {
-                webView.loadUrl(data.toString());
-            }
+        if (startURL != null && !startURL.trim().isEmpty() && !startURL.startsWith("file:///")) {
+            webView.loadUrl(startURL);
         } else {
-            if (startURL != null && !startURL.trim().isEmpty()) {
-                webView.loadUrl(startURL);
-            } else {
-                webView.loadUrl("file:///android_asset/index.html");
-            }
+            webView.loadUrl("file:///android_asset/index.html");
         }
     }
 
-    // --- METODE ZA ČITANJE I PARSIRANJE appConfig.js FAJLA ---
+    // --- BEZBEDNO UČITAVANJE I KOPIRANJE appConfig.js ---
 
-    private void loadConfigFromAssets() {
-        try {
-            InputStream inputStream = getAssets().open("appConfig.js");
+    private void loadConfigFromInternalStorage() {
+        File configFile = new File(getFilesDir(), "appConfig.js");
+        
+        // Ako fajl ne postoji ili je oštećen, kopiramo ga iz assets-a
+        if (!configFile.exists() || configFile.length() < 10) {
+            copyAssetToFile("appConfig.js", configFile);
+        }
+
+        try (FileInputStream inputStream = new FileInputStream(configFile)) {
             int size = inputStream.available();
             byte[] buffer = new byte[size];
             inputStream.read(buffer);
-            inputStream.close();
             String jsContent = new String(buffer, "UTF-8");
 
-            // Parsiramo vrednosti preko Regularnih Izraza (Regex)
             portrait = parseBoolean(jsContent, "portrait", true);
             screenOn = parseBoolean(jsContent, "screenOn", false);
             allowZoom = parseBoolean(jsContent, "allowZoom", false); 
@@ -459,7 +446,48 @@ public class MainActivity extends AppCompatActivity {
             externalDomains = parseArray(jsContent, "external");
 
         } catch (Exception e) {
-            // Ako fajl fali ili dođe do greške, ostaće podrazumevane vrednosti
+            // Ako dođe do greške, vraćamo fabrički iz assets-a
+            copyAssetToFile("appConfig.js", configFile);
+            loadConfigFromInternalStorage();
+        }
+    }
+
+    private void copyAssetToFile(String assetName, File outFile) {
+        try (InputStream in = getAssets().open(assetName);
+             OutputStream out = new FileOutputStream(outFile)) {
+            byte[] buffer = new byte[1024];
+            int read;
+            while ((read = in.read(buffer)) != -1) {
+                out.write(buffer, 0, read);
+            }
+        } catch (Exception ignored) {}
+    }
+
+    // --- JAVASCRIPT BRIDGE ZA SNIMANJE I RESTART ---
+
+    public static class ConfigSaverInterface {
+        Context mContext;
+        ConfigSaverInterface(Context c) { mContext = c; }
+
+        @JavascriptInterface
+        public void saveConfigFile(String jsContent) {
+            File configFile = new File(mContext.getFilesDir(), "appConfig.js");
+            try (FileOutputStream fos = new FileOutputStream(configFile)) {
+                fos.write(jsContent.getBytes());
+            } catch (Exception ignored) {}
+        }
+
+        @JavascriptInterface
+        public void restartApp() {
+            Intent intent = mContext.getPackageManager().getLaunchIntentForPackage(mContext.getPackageName());
+            if (intent != null) {
+                intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP | Intent.FLAG_ACTIVITY_NEW_TASK);
+                mContext.startActivity(intent);
+                if (mContext instanceof Activity) {
+                    ((Activity) mContext).finish();
+                }
+                System.exit(0);
+            }
         }
     }
 
