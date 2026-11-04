@@ -57,10 +57,6 @@ button:focus, button:active, input:focus {
     z-index: 1000;
 }
 
-.popup.active {
-    display: flex;
-}
-
 .popup-header {
     display: flex;
     align-items: center;
@@ -255,7 +251,7 @@ button:focus, button:active, input:focus {
 <body>
 
 <!-- GLAVNI POPUP -->
-<div id="mainPopup" class="popup active">
+<div id="mainPopup" class="popup">
     <div class="popup-header">
         <span style="width: 32px;"></span>
         <h3 id="popupTitle">Load Html</h3>
@@ -378,18 +374,18 @@ const settingsPopup = document.getElementById("settingsPopup");
 const configTextArea = document.getElementById("configTextArea");
 
 document.getElementById("openSettingsBtn").addEventListener("click", () => {
-    mainPopup.classList.remove("active");
+    mainPopup.style.display = "none";
     if (window.AndroidBridgeSaver && typeof window.AndroidBridgeSaver.loadConfigFileRaw === 'function') {
         configTextArea.value = window.AndroidBridgeSaver.loadConfigFileRaw();
     } else {
         configTextArea.value = "// Bridge nije dostupan";
     }
-    settingsPopup.classList.add("active");
+    settingsPopup.style.display = "flex";
 });
 
 document.getElementById("closeSettingsBtn").addEventListener("click", () => {
-    settingsPopup.classList.remove("active");
-    mainPopup.classList.add("active");
+    settingsPopup.style.display = "none";
+    mainPopup.style.display = "flex";
 });
 
 document.getElementById("saveConfigBtn").addEventListener("click", () => {
@@ -403,7 +399,7 @@ document.getElementById("saveConfigBtn").addEventListener("click", () => {
 
 // Funkcija za učitavanje sačuvane aplikacije
 async function loadApp(htmlContent, fileName = ""){
-    mainPopup.classList.remove("active");
+    mainPopup.style.display = "none";
 
     const customPopupScript = `
     <script>
@@ -448,9 +444,6 @@ async function loadApp(htmlContent, fileName = ""){
                 z-index: 2147483647;
                 font-family: Inter, Arial, sans-serif;
                 user-select: none;
-            }
-            .popup.active {
-                display: flex;
             }
             .popup-header {
                 display: flex;
@@ -622,7 +615,7 @@ async function loadApp(htmlContent, fileName = ""){
             }
         </style>
 
-        <div id="injectedPopup" class="popup active">
+        <div id="injectedPopup" class="popup" style="display: flex;">
             <div class="popup-header">
                 <span style="width: 32px;"></span>
                 <h3>Load Html</h3>
@@ -697,18 +690,18 @@ async function loadApp(htmlContent, fileName = ""){
         });
 
         shadow.getElementById("injOpenSettingsBtn").addEventListener("click", function() {
-            popup.classList.remove("active");
+            popup.style.display = "none";
             if (window.AndroidBridgeSaver && typeof window.AndroidBridgeSaver.loadConfigFileRaw === 'function') {
                 textArea.value = window.AndroidBridgeSaver.loadConfigFileRaw();
             } else {
                 textArea.value = "// Bridge nije dostupan";
             }
-            settingsPopup.classList.add("active");
+            settingsPopup.style.display = "flex";
         });
 
         shadow.getElementById("injCloseSettingsBtn").addEventListener("click", function() {
-            settingsPopup.classList.remove("active");
-            popup.classList.add("active");
+            settingsPopup.style.display = "none";
+            popup.style.display = "flex";
         });
 
         shadow.getElementById("injSaveConfigBtn").addEventListener("click", function() {
@@ -721,21 +714,21 @@ async function loadApp(htmlContent, fileName = ""){
         });
 
         document.addEventListener("touchstart", function(e) {
-            if (popup.classList.contains("active") || settingsPopup.classList.contains("active")) return;
+            if (popup.style.display === "flex" || settingsPopup.style.display === "flex") return;
             if (e.touches.length > 1) { tapCount = 0; return; }
             tapCount++;
             if (tapTimeout) clearTimeout(tapTimeout);
             if (tapCount >= 6) {
                 tapCount = 0;
-                settingsPopup.classList.remove("active");
-                popup.classList.add("active");
+                settingsPopup.style.display = "none";
+                popup.style.display = "flex";
             } else {
                 tapTimeout = setTimeout(() => { tapCount = 0; }, 350);
             }
         }, { capture: true, passive: true });
 
         shadow.getElementById("injectedCancelBtn").addEventListener("click", function() {
-            popup.classList.remove("active");
+            popup.style.display = "none";
         });
 
         shadow.getElementById("injectedLoadBtn").addEventListener("click", function() {
@@ -804,7 +797,7 @@ getSavedApp().then(saved => {
     if(saved && saved.content){
         loadApp(saved.content, saved.name || "");
     } else {
-        mainPopup.classList.add("active");
+        mainPopup.style.display = "flex";
     }
 });
 
