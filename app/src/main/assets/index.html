@@ -281,18 +281,10 @@ const configTextArea = document.getElementById("configTextArea");
 
 document.getElementById("openConfigBtn").addEventListener("click", () => {
     mainPopup.style.display = "none";
-    if (typeof config !== 'undefined') {
-        configTextArea.value = `const config = {\n` +
-            `    startURL: "${config.startURL || ""}",\n` +
-            `    portrait: ${config.portrait},\n` +
-            `    screenOn: ${config.screenOn},\n` +
-            `    allowZoom: ${config.allowZoom},\n` +
-            `    forceDark: ${config.forceDark},\n` +
-            `    broAgent: "${config.broAgent || ""}",\n` +
-            `    external: ${JSON.stringify(config.external || [], null, 4)}\n` +
-            `};`;
+    if (window.AndroidBridgeSaver && typeof window.AndroidBridgeSaver.loadConfigFileRaw === 'function') {
+        configTextArea.value = window.AndroidBridgeSaver.loadConfigFileRaw();
     } else {
-        configTextArea.value = "// Nema učitane konfiguracije";
+        configTextArea.value = "// Bridge nije dostupan";
     }
     configModal.style.display = "flex";
 });
@@ -516,18 +508,10 @@ async function loadApp(htmlContent, fileName = ""){
 
         shadow.getElementById("injOpenConfigBtn").addEventListener("click", function() {
             popup.style.display = "none";
-            if (typeof config !== 'undefined') {
-                textArea.value = \`const config = {\n\` +
-                    \`    startURL: "\${config.startURL || ""}",\n\` +
-                    \`    portrait: \${config.portrait},\n\` +
-                    \`    screenOn: \${config.screenOn},\n\` +
-                    \`    allowZoom: \${config.allowZoom},\n\` +
-                    \`    forceDark: \${config.forceDark},\n\` +
-                    \`    broAgent: "\${config.broAgent || ""}",\n\` +
-                    \`    external: \${JSON.stringify(config.external || [], null, 4)}\n\` +
-                    \`};\`;
+            if (window.AndroidBridgeSaver && typeof window.AndroidBridgeSaver.loadConfigFileRaw === 'function') {
+                textArea.value = window.AndroidBridgeSaver.loadConfigFileRaw();
             } else {
-                textArea.value = "// Nema učitane konfiguracije";
+                textArea.value = "// Bridge nije dostupan";
             }
             configModal.style.display = "flex";
         });
