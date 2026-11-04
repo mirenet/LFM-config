@@ -49,13 +49,54 @@ html, body{
     z-index: 1000;
 }
 
-.popup h3{
+.popup-header {
+    display: flex;
+    align-items: center;
     margin-top: -6px;
     margin-bottom: 20px;
+    width: 100%;
+    position: relative;
+}
+
+.popup h3{
+    margin: 0;
     color: #CBD868;
     font-size: 17px;
     font-weight: 600;
+    flex-grow: 1;
     text-align: center;
+}
+
+/* Točkić unutar zaglavlja pop-up prozora */
+.config-icon-btn {
+    background: none;
+    border: none;
+    color: #CBD868;
+    cursor: pointer;
+    border-radius: 6px;
+    width: 30px;
+    height: 30px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transition: background 0.15s;
+    outline: none;
+    position: absolute;
+    right: 0;
+}
+
+.config-icon-btn:hover {
+    background: rgba(203, 216, 104, 0.1);
+}
+
+.config-icon-btn svg {
+    width: 18px;
+    height: 18px;
+    stroke: currentColor;
+    stroke-width: 2;
+    stroke-linecap: round;
+    stroke-linejoin: round;
+    fill: none;
 }
 
 .checkbox-row {
@@ -161,52 +202,22 @@ html, body{
 .hidden-file-input {
     display: none;
 }
-
-/* Točkić u gornjem desnom uglu */
-.config-icon-btn {
-    position: fixed;
-    top: 15px;
-    right: 15px;
-    background: none;
-    border: none;
-    color: #CBD868;
-    cursor: pointer;
-    z-index: 9999;
-    width: 36px;
-    height: 36px;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    border-radius: 8px;
-    transition: background 0.15s;
-}
-.config-icon-btn:hover {
-    background: rgba(203, 216, 104, 0.1);
-}
-.config-icon-btn svg {
-    width: 22px;
-    height: 22px;
-    stroke: currentColor;
-    stroke-width: 2;
-    stroke-linecap: round;
-    stroke-linejoin: round;
-    fill: none;
-}
 </style>
 </head>
 <body>
 
-<!-- Dugme sa točkićem u uglu -->
-<button id="openConfigBtn" class="config-icon-btn" title="Edit config">
-    <svg viewBox="0 0 24 24">
-        <circle cx="12" cy="12" r="3"></circle>
-        <path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1 0 2.83 2 2 0 0 1-2.83 0l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-2 2 2 2 0 0 1-2-2v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 0 1-2.83 0 2 2 0 0 1 0-2.83l-.06-.06a1.65 1.65 0 0 0 .33-1.82 1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1-2-2 2 2 0 0 1 2-2h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 0 1 0-2.83 2 2 0 0 1 2.83 0l.06.06a1.65 1.65 0 0 0 1.82.33H9a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 2-2 2 2 0 0 1 2 2v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l-.06-.06a2 2 0 0 1 2.83 0 2 2 0 0 1 0 2.83l-.06-.06a1.65 1.65 0 0 0-.33 1.82V9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 2 2 2 2 0 0 1-2 2h-.09A1.65 1.65 0 0 0-1.51 1z"></path>
-    </svg>
-</button>
-
 <!-- GLAVNI POPUP -->
 <div class="popup" id="mainPopup">
-    <h3 id="popupTitle">Load Html</h3>
+    <div class="popup-header">
+        <span style="width: 30px;"></span>
+        <h3 id="popupTitle">Load Html</h3>
+        <button id="openConfigBtn" class="config-icon-btn" title="Edit config">
+            <svg viewBox="0 0 24 24">
+                <circle cx="12" cy="12" r="3"></circle>
+                <path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1 0 2.83 2 2 0 0 1-2.83 0l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-2 2 2 2 0 0 1-2-2v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 0 1-2.83 0 2 2 0 0 1 0-2.83l-.06-.06a1.65 1.65 0 0 0 .33-1.82 1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1-2-2 2 2 0 0 1 2-2h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 0 1 0-2.83 2 2 0 0 1 2.83 0l.06.06a1.65 1.65 0 0 0 1.82.33H9a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 2-2 2 2 0 0 1 2 2v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l-.06-.06a2 2 0 0 1 2.83 0 2 2 0 0 1 0 2.83l-.06-.06a1.65 1.65 0 0 0-.33 1.82V9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 2 2 2 2 0 0 1-2 2h-.09A1.65 1.65 0 0 0-1.51 1z"></path>
+            </svg>
+        </button>
+    </div>
     
     <div id="checkboxContainer" class="checkbox-row"></div>
     
@@ -224,7 +235,11 @@ html, body{
 
 <!-- EDITOR MODAL -->
 <div class="popup" id="configModal">
-    <h3>Edit appConfig.js</h3>
+    <div class="popup-header">
+        <span style="width: 30px;"></span>
+        <h3>Edit appConfig.js</h3>
+        <span></span>
+    </div>
     <textarea id="configTextArea" style="width:100%; height:180px; background:#111; color:#CBD868; border:1px solid #555b35; border-radius:8px; padding:10px; font-family:monospace; font-size:12px; box-sizing:border-box; outline:none; resize:none;"></textarea>
     <div class="row" style="margin-top:14px;">
         <button id="saveConfigBtn">
@@ -335,29 +350,34 @@ function hidePopup() {
 }
 
 //=========================
-// CONFIG EDITOR LOGIC
+// CONFIG EDITOR LOGIC (Direktan pristup config objektu bez fetch-ovanja)
 //=========================
 const configModal = document.getElementById("configModal");
 const configTextArea = document.getElementById("configTextArea");
 
 document.getElementById("openConfigBtn").addEventListener("click", () => {
-    // Zatvorimo glavni meni ako je otvoren
     document.getElementById("mainPopup").style.display = "none";
-
-    fetch('appConfig.js')
-        .then(res => res.text())
-        .then(text => {
-            configTextArea.value = text;
-            configModal.style.display = "flex";
-        })
-        .catch(() => {
-            configTextArea.value = "// Greška pri učitavanju appConfig.js fajla";
-            configModal.style.display = "flex";
-        });
+    
+    // Čitamo direktno trenutni config objekat koji je učitan preko appConfig.js skripte
+    if (typeof config !== 'undefined') {
+        configTextArea.value = `const config = {\n` +
+            `    startURL: "${config.startURL || ""}",\n` +
+            `    portrait: ${config.portrait},\n` +
+            `    screenOn: ${config.screenOn},\n` +
+            `    allowZoom: ${config.allowZoom},\n` +
+            `    forceDark: ${config.forceDark},\n` +
+            `    broAgent: "${config.broAgent || ""}",\n` +
+            `    external: ${JSON.stringify(config.external || [], null, 4)}\n` +
+            `};`;
+    } else {
+        configTextArea.value = "// Nema učitane konfiguracije";
+    }
+    configModal.style.display = "flex";
 });
 
 document.getElementById("closeConfigBtn").addEventListener("click", () => {
     configModal.style.display = "none";
+    document.getElementById("mainPopup").style.display = "flex";
 });
 
 document.getElementById("saveConfigBtn").addEventListener("click", () => {
@@ -370,7 +390,7 @@ document.getElementById("saveConfigBtn").addEventListener("click", () => {
 });
 
 //=========================
-// LOAD FUNCTION (sa injektovanjem točkića i editora u učitani HTML)
+// LOAD FUNCTION
 //=========================
 async function loadApp(htmlContent, fileName = ""){
     hidePopup();
@@ -407,13 +427,44 @@ async function loadApp(htmlContent, fileName = ""){
                 font-family: Inter, Arial, sans-serif;
                 user-select: none;
             }
-            .popup h3 {
+            .popup-header {
+                display: flex;
+                align-items: center;
                 margin-top: -6px;
                 margin-bottom: 20px;
+                width: 100%;
+                position: relative;
+            }
+            .popup h3 {
+                margin: 0;
                 color: #CBD868;
                 font-size: 17px;
                 font-weight: 600;
+                flex-grow: 1;
                 text-align: center;
+            }
+            .config-icon-btn {
+                background: none;
+                border: none;
+                color: #CBD868;
+                cursor: pointer;
+                border-radius: 6px;
+                width: 30px;
+                height: 30px;
+                display: flex;
+                align-items: center;
+                justify-content: center;
+                position: absolute;
+                right: 0;
+            }
+            .config-icon-btn svg {
+                width: 18px;
+                height: 18px;
+                stroke: currentColor;
+                stroke-width: 2;
+                stroke-linecap: round;
+                stroke-linejoin: round;
+                fill: none;
             }
             .checkbox-row {
                 -webkit-tap-highlight-color: transparent;
@@ -451,7 +502,6 @@ async function loadApp(htmlContent, fileName = ""){
                 display: inline-flex;
                 align-items: center;
                 justify-content: center;
-                transition: filter 0.15s, background-color 0.15s, border-color 0.15s;
                 position: relative;
                 box-sizing: border-box;
             }
@@ -495,48 +545,24 @@ async function loadApp(htmlContent, fileName = ""){
                 background-color: #CBD868 !important;
                 color: #555 !important;
                 outline: none;
-                transition: filter 0.15s, background 0.15s;
             }
             .mask-text {
                 color: #555;
                 filter: brightness(0);
             }
-            .config-icon-btn {
-                position: fixed;
-                top: 15px;
-                right: 15px;
-                background: none;
-                border: none;
-                color: #CBD868;
-                cursor: pointer;
-                z-index: 2147483646;
-                width: 36px;
-                height: 36px;
-                display: flex;
-                align-items: center;
-                justify-content: center;
-                border-radius: 8px;
-            }
-            .config-icon-btn svg {
-                width: 22px;
-                height: 22px;
-                stroke: currentColor;
-                stroke-width: 2;
-                stroke-linecap: round;
-                stroke-linejoin: round;
-                fill: none;
-            }
         </style>
 
-        <button id="injOpenConfigBtn" class="config-icon-btn" title="Edit config">
-            <svg viewBox="0 0 24 24">
-                <circle cx="12" cy="12" r="3"></circle>
-                <path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1 0 2.83 2 2 0 0 1-2.83 0l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-2 2 2 2 0 0 1-2-2v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 0 1-2.83 0 2 2 0 0 1 0-2.83l-.06-.06a1.65 1.65 0 0 0 .33-1.82 1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1-2-2 2 2 0 0 1 2-2h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 0 1 0-2.83 2 2 0 0 1 2.83 0l.06.06a1.65 1.65 0 0 0 1.82.33H9a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 2-2 2 2 0 0 1 2 2v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l-.06-.06a2 2 0 0 1 2.83 0 2 2 0 0 1 0 2.83l-.06-.06a1.65 1.65 0 0 0-.33 1.82V9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 2 2 2 2 0 0 1-2 2h-.09A1.65 1.65 0 0 0-1.51 1z"></path>
-            </svg>
-        </button>
-
         <div id="injectedPopup" class="popup">
-            <h3>Load Html</h3>
+            <div class="popup-header">
+                <span style="width: 30px;"></span>
+                <h3>Load Html</h3>
+                <button id="injOpenConfigBtn" class="config-icon-btn" title="Edit config">
+                    <svg viewBox="0 0 24 24">
+                        <circle cx="12" cy="12" r="3"></circle>
+                        <path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1 0 2.83 2 2 0 0 1-2.83 0l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-2 2 2 2 0 0 1-2-2v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 0 1-2.83 0 2 2 0 0 1 0-2.83l-.06-.06a1.65 1.65 0 0 0 .33-1.82 1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1-2-2 2 2 0 0 1 2-2h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 0 1 0-2.83 2 2 0 0 1 2.83 0l.06.06a1.65 1.65 0 0 0 1.82.33H9a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 2-2 2 2 0 0 1 2 2v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l-.06-.06a2 2 0 0 1 2.83 0 2 2 0 0 1 0 2.83l-.06-.06a1.65 1.65 0 0 0-.33 1.82V9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 2 2 2 2 0 0 1-2 2h-.09A1.65 1.65 0 0 0-1.51 1z"></path>
+                    </svg>
+                </button>
+            </div>
             <div class="checkbox-row">
                 <label>
                     <input type="checkbox" id="injectedClearDataCheckbox">
@@ -544,17 +570,17 @@ async function loadApp(htmlContent, fileName = ""){
                 </label>
             </div>
             <div class="row">
-                <button id="injectedLoadBtn">
-                    <span class="mask-text">Load</span>
-                </button>
-                <button id="injectedCancelBtn">
-                    <span class="mask-text">Close</span>
-                </button>
+                <button id="injectedLoadBtn"><span class="mask-text">Load</span></button>
+                <button id="injectedCancelBtn"><span class="mask-text">Close</span></button>
             </div>
         </div>
 
         <div id="injectedConfigModal" class="popup">
-            <h3>Edit appConfig.js</h3>
+            <div class="popup-header">
+                <span style="width: 30px;"></span>
+                <h3>Edit appConfig.js</h3>
+                <span></span>
+            </div>
             <textarea id="injConfigTextArea" style="width:100%; height:180px; background:#111; color:#CBD868; border:1px solid #555b35; border-radius:8px; padding:10px; font-family:monospace; font-size:12px; box-sizing:border-box; outline:none; resize:none;"></textarea>
             <div class="row" style="margin-top:14px;">
                 <button id="injSaveConfigBtn"><span class="mask-text">Save</span></button>
@@ -565,8 +591,6 @@ async function loadApp(htmlContent, fileName = ""){
 
         let tapCount = 0;
         let tapTimeout = null;
-        let startX = 0;
-        let startY = 0;
         const popup = shadow.getElementById("injectedPopup");
         const configModal = shadow.getElementById("injectedConfigModal");
         const clearCheckbox = shadow.getElementById("injectedClearDataCheckbox");
@@ -602,20 +626,25 @@ async function loadApp(htmlContent, fileName = ""){
 
         shadow.getElementById("injOpenConfigBtn").addEventListener("click", function() {
             popup.style.display = "none";
-            fetch('appConfig.js')
-                .then(res => res.text())
-                .then(text => {
-                    textArea.value = text;
-                    configModal.style.display = "flex";
-                })
-                .catch(() => {
-                    textArea.value = "// Greška pri učitavanju fajla";
-                    configModal.style.display = "flex";
-                });
+            if (typeof config !== 'undefined') {
+                textArea.value = `const config = {\n` +
+                    `    startURL: "${config.startURL || ""}",\n` +
+                    `    portrait: ${config.portrait},\n` +
+                    `    screenOn: ${config.screenOn},\n` +
+                    `    allowZoom: ${config.allowZoom},\n` +
+                    `    forceDark: ${config.forceDark},\n` +
+                    `    broAgent: "${config.broAgent || ""}",\n` +
+                    `    external: ${JSON.stringify(config.external || [], null, 4)}\n` +
+                    `};`;
+            } else {
+                textArea.value = "// Nema učitane konfiguracije";
+            }
+            configModal.style.display = "flex";
         });
 
         shadow.getElementById("injCloseConfigBtn").addEventListener("click", function() {
             configModal.style.display = "none";
+            popup.style.display = "flex";
         });
 
         shadow.getElementById("injSaveConfigBtn").addEventListener("click", function() {
@@ -630,8 +659,6 @@ async function loadApp(htmlContent, fileName = ""){
         document.addEventListener("touchstart", function(e) {
             if (popup.style.display === "flex" || configModal.style.display === "flex") return;
             if (e.touches.length > 1) { tapCount = 0; return; }
-            startX = e.touches[0].clientX;
-            startY = e.touches[0].clientY;
             tapCount++;
             if (tapTimeout) clearTimeout(tapTimeout);
             if (tapCount >= 6) {
