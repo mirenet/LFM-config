@@ -5,6 +5,9 @@
 <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no, viewport-fit=cover">
 <title>Loader</title>
 
+<!-- Učitavanje konfiguracije -->
+<script src="appConfig.js"></script>
+
 <style>
 :root{
     --main-background: #070707;
@@ -13,7 +16,6 @@
     --btn-active: #8C7F6F;
 }
 
-/* Back. */
 html, body{
     margin:0;
     height:100%;
@@ -26,7 +28,6 @@ html, body{
     user-select: none;    
 }
 
-/* Popup */
 .popup{
     display: none;
     flex-direction: column;
@@ -48,17 +49,15 @@ html, body{
     z-index: 1000;
 }
 
-/* Title */
 .popup h3{
     margin-top: -6px;
-    margin-bottom: 40px;
+    margin-bottom: 20px;
     color: #CBD868;
     font-size: 17px;
     font-weight: 600;
     text-align: center;
 }
 
-/* Checkbox container */
 .checkbox-row {
     -webkit-tap-highlight-color: transparent;
     appearance: none;
@@ -83,7 +82,6 @@ html, body{
     text-align: left;
 }
 
-/* Custom Checkbox */
 .checkbox-row label input[type="checkbox"] {
     appearance: none;
     -webkit-appearance: none;
@@ -100,11 +98,9 @@ html, body{
     justify-content: center;
     transition: filter 0.15s, background-color 0.15s, border-color 0.15s;
     position: relative;
-    -webkit-tap-highlight-color: transparent;
     box-sizing: border-box;
 }
 
-/* Inside Tick */
 .checkbox-row label input[type="checkbox"]::after {
     content: "";
     width: 3px;
@@ -118,7 +114,6 @@ html, body{
     filter: brightness(0); 
 }
 
-/* Checked state */
 .checkbox-row label input[type="checkbox"]:checked {
     background-color: var(--btn-accent);
     border-color: var(--btn-accent);
@@ -128,18 +123,6 @@ html, body{
     transform: rotate(40deg) scale(1);
 }
 
-/* Checkbox - hover & click */
-@media (hover: hover) and (pointer: fine) {
-    .checkbox-row label input[type="checkbox"]:hover {
-        filter: brightness(1.25);
-    }
-}
-
-.checkbox-row label input[type="checkbox"]:active {
-    filter: brightness(1.25);
-}
-
-/* Butn. row */
 .row{
     display: flex;
     flex-wrap: wrap;
@@ -148,7 +131,6 @@ html, body{
     margin-top: 16px;
 }
 
-/* Butn. in popup */
 .row button{
     flex: 1 1 0;
     width: 0;
@@ -164,43 +146,66 @@ html, body{
     color: #555 !important;
     transition: filter 0.15s, background 0.15s;
     outline: none;
-    -webkit-tap-highlight-color: transparent;
-    appearance: none;
 }
 
-/* Hover */
-@media (hover: hover) and (pointer: fine) {
-    .row button:hover{
-        filter: brightness(1.25);
-        box-shadow: 0 3px 10px rgba(0,0,0,0.3);
-    }
-}
-
-/* Click */
-.row button:active{
+.row button:hover{
     filter: brightness(1.25);
     box-shadow: 0 3px 10px rgba(0,0,0,0.3);
 }
 
-/* Mask text */
 .mask-text{
     color: #555;
     filter: brightness(0);
-}
-
-.row button:focus{
-    outline: none;
 }
 
 .hidden-file-input {
     display: none;
 }
 
+/* Točkić u gornjem desnom uglu */
+.config-icon-btn {
+    position: fixed;
+    top: 15px;
+    right: 15px;
+    background: none;
+    border: none;
+    color: #CBD868;
+    cursor: pointer;
+    z-index: 9999;
+    width: 36px;
+    height: 36px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    border-radius: 8px;
+    transition: background 0.15s;
+}
+.config-icon-btn:hover {
+    background: rgba(203, 216, 104, 0.1);
+}
+.config-icon-btn svg {
+    width: 22px;
+    height: 22px;
+    stroke: currentColor;
+    stroke-width: 2;
+    stroke-linecap: round;
+    stroke-linejoin: round;
+    fill: none;
+}
 </style>
 </head>
 <body>
 
-<div class="popup">
+<!-- Dugme sa točkićem u uglu -->
+<button id="openConfigBtn" class="config-icon-btn" title="Edit config">
+    <svg viewBox="0 0 24 24">
+        <circle cx="12" cy="12" r="3"></circle>
+        <path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1 0 2.83 2 2 0 0 1-2.83 0l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-2 2 2 2 0 0 1-2-2v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 0 1-2.83 0 2 2 0 0 1 0-2.83l-.06-.06a1.65 1.65 0 0 0 .33-1.82 1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1-2-2 2 2 0 0 1 2-2h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 0 1 0-2.83 2 2 0 0 1 2.83 0l.06.06a1.65 1.65 0 0 0 1.82.33H9a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 2-2 2 2 0 0 1 2 2v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l-.06-.06a2 2 0 0 1 2.83 0 2 2 0 0 1 0 2.83l-.06-.06a1.65 1.65 0 0 0-.33 1.82V9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 2 2 2 2 0 0 1-2 2h-.09a1.65 1.65 0 0 0-1.51 1z"></path>
+    </svg>
+</button>
+
+<!-- GLAVNI POPUP -->
+<div class="popup" id="mainPopup">
     <h3 id="popupTitle">Load Html</h3>
     
     <div id="checkboxContainer" class="checkbox-row"></div>
@@ -217,11 +222,21 @@ html, body{
     <input type="file" id="fileInput" class="hidden-file-input" accept=".html,.htm" />
 </div>
 
-<script>
+<!-- EDITOR MODAL (Ista veličina i stil kao pop-up) -->
+<div class="popup" id="configModal">
+    <h3>Edit appConfig.js</h3>
+    <textarea id="configTextArea" style="width:100%; height:180px; background:#111; color:#CBD868; border:1px solid #555b35; border-radius:8px; padding:10px; font-family:monospace; font-size:12px; box-sizing:border-box; outline:none; resize:none;"></textarea>
+    <div class="row" style="margin-top:14px;">
+        <button id="saveConfigBtn">
+            <span class="mask-text">Save</span>
+        </button>
+        <button id="closeConfigBtn">
+            <span class="mask-text">Close</span>
+        </button>
+    </div>
+</div>
 
-//========================
-//  INDEXED DB STORAGE
-//========================
+<script>
 const DB_NAME = "LDR_DB";
 const STORE_NAME = "apps";
 
@@ -288,12 +303,12 @@ async function getSetting(key){
 }
 
 //==========================
-//  MENU FUNCTIONS
+// MENU FUNCTIONS
 //==========================
 async function showPopup() {
     const title = document.getElementById("popupTitle");
     const checkboxContainer = document.getElementById("checkboxContainer");
-    const popup = document.querySelector(".popup");
+    const popup = document.getElementById("mainPopup");
 
     title.innerText = "Load Html";
 
@@ -305,7 +320,6 @@ async function showPopup() {
     `;
 
     const clearCheckbox = document.getElementById("clearDataCheckbox");
-   
     const savedState = await getSetting("clearCachePreference");
     clearCheckbox.checked = (savedState === undefined || savedState === null) ? false : savedState;
 
@@ -317,11 +331,43 @@ async function showPopup() {
 }
 
 function hidePopup() {
-    document.querySelector(".popup").style.display = "none";
+    document.getElementById("mainPopup").style.display = "none";
 }
 
 //=========================
-//  LOAD FUNCTION
+// CONFIG EDITOR LOGIC
+//=========================
+const configModal = document.getElementById("configModal");
+const configTextArea = document.getElementById("configTextArea");
+
+document.getElementById("openConfigBtn").addEventListener("click", () => {
+    fetch('appConfig.js')
+        .then(res => res.text())
+        .then(text => {
+            configTextArea.value = text;
+            configModal.style.display = "flex";
+        })
+        .catch(() => {
+            configTextArea.value = "// Greška pri učitavanju appConfig.js fajla";
+            configModal.style.display = "flex";
+        });
+});
+
+document.getElementById("closeConfigBtn").addEventListener("click", () => {
+    configModal.style.display = "none";
+});
+
+document.getElementById("saveConfigBtn").addEventListener("click", () => {
+    if (window.AndroidBridgeSaver && typeof window.AndroidBridgeSaver.saveConfigFile === 'function') {
+        window.AndroidBridgeSaver.saveConfigFile(configTextArea.value);
+        window.AndroidBridgeSaver.restartApp();
+    } else {
+        alert("Bridge nije dostupan!");
+    }
+});
+
+//=========================
+// LOAD FUNCTION (sa injektovanjem istog točkića u učitani HTML)
 //=========================
 async function loadApp(htmlContent, fileName = ""){
     hidePopup();
@@ -360,7 +406,7 @@ async function loadApp(htmlContent, fileName = ""){
             }
             .popup h3 {
                 margin-top: -6px;
-                margin-bottom: 40px;
+                margin-bottom: 20px;
                 color: #CBD868;
                 font-size: 17px;
                 font-weight: 600;
@@ -404,7 +450,6 @@ async function loadApp(htmlContent, fileName = ""){
                 justify-content: center;
                 transition: filter 0.15s, background-color 0.15s, border-color 0.15s;
                 position: relative;
-                -webkit-tap-highlight-color: transparent;
                 box-sizing: border-box;
             }
             .checkbox-row label input[type="checkbox"]::after {
@@ -425,14 +470,6 @@ async function loadApp(htmlContent, fileName = ""){
             }
             .checkbox-row label input[type="checkbox"]:checked::after {
                 transform: rotate(40deg) scale(1);
-            }
-            @media (hover: hover) and (pointer: fine) {
-                .checkbox-row label input[type="checkbox"]:hover {
-                    filter: brightness(1.25);
-                }
-            }
-            .checkbox-row label input[type="checkbox"]:active {
-                filter: brightness(1.25);
             }
             .row {
                 display: flex;
@@ -455,24 +492,45 @@ async function loadApp(htmlContent, fileName = ""){
                 background-color: #CBD868 !important;
                 color: #555 !important;
                 outline: none;
-                -webkit-tap-highlight-color: transparent;
                 transition: filter 0.15s, background 0.15s;
-            }
-            @media (hover: hover) and (pointer: fine) {
-                .row button:hover {
-                    filter: brightness(1.25);
-                    box-shadow: 0 3px 10px rgba(0,0,0,0.3);
-                }
-            }
-            .row button:active {
-                filter: brightness(1.25);
-                box-shadow: 0 3px 10px rgba(0,0,0,0.3);
             }
             .mask-text {
                 color: #555;
                 filter: brightness(0);
             }
+            .config-icon-btn {
+                position: fixed;
+                top: 15px;
+                right: 15px;
+                background: none;
+                border: none;
+                color: #CBD868;
+                cursor: pointer;
+                z-index: 2147483646;
+                width: 36px;
+                height: 36px;
+                display: flex;
+                align-items: center;
+                justify-content: center;
+                border-radius: 8px;
+            }
+            .config-icon-btn svg {
+                width: 22px;
+                height: 22px;
+                stroke: currentColor;
+                stroke-width: 2;
+                stroke-linecap: round;
+                stroke-linejoin: round;
+                fill: none;
+            }
         </style>
+
+        <button id="injOpenConfigBtn" class="config-icon-btn" title="Edit config">
+            <svg viewBox="0 0 24 24">
+                <circle cx="12" cy="12" r="3"></circle>
+                <path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1 0 2.83 2 2 0 0 1-2.83 0l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-2 2 2 2 0 0 1-2-2v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 0 1-2.83 0 2 2 0 0 1 0-2.83l-.06-.06a1.65 1.65 0 0 0 .33-1.82 1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1-2-2 2 2 0 0 1 2-2h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 0 1 0-2.83 2 2 0 0 1 2.83 0l.06.06a1.65 1.65 0 0 0 1.82.33H9a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 2-2 2 2 0 0 1 2 2v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l-.06-.06a2 2 0 0 1 2.83 0 2 2 0 0 1 0 2.83l-.06-.06a1.65 1.65 0 0 0-.33 1.82V9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 2 2 2 2 0 0 1-2 2h-.09a1.65 1.65 0 0 0-1.51 1z"></path>
+            </svg>
+        </button>
 
         <div id="injectedPopup" class="popup">
             <h3>Load Html</h3>
@@ -491,6 +549,15 @@ async function loadApp(htmlContent, fileName = ""){
                 </button>
             </div>
         </div>
+
+        <div id="injectedConfigModal" class="popup">
+            <h3>Edit appConfig.js</h3>
+            <textarea id="injConfigTextArea" style="width:100%; height:180px; background:#111; color:#CBD868; border:1px solid #555b35; border-radius:8px; padding:10px; font-family:monospace; font-size:12px; box-sizing:border-box; outline:none; resize:none;"></textarea>
+            <div class="row" style="margin-top:14px;">
+                <button id="injSaveConfigBtn"><span class="mask-text">Save</span></button>
+                <button id="injCloseConfigBtn"><span class="mask-text">Close</span></button>
+            </div>
+        </div>
         \`;
 
         let tapCount = 0;
@@ -498,7 +565,9 @@ async function loadApp(htmlContent, fileName = ""){
         let startX = 0;
         let startY = 0;
         const popup = shadow.getElementById("injectedPopup");
+        const configModal = shadow.getElementById("injectedConfigModal");
         const clearCheckbox = shadow.getElementById("injectedClearDataCheckbox");
+        const textArea = shadow.getElementById("injConfigTextArea");
 
         const DB_NAME = "LDR_DB";
         const STORE_NAME = "apps";
@@ -528,42 +597,44 @@ async function loadApp(htmlContent, fileName = ""){
             };
         });
 
-        document.addEventListener("touchstart", function(e) {
-            if (popup.style.display === "flex") return;
+        shadow.getElementById("injOpenConfigBtn").addEventListener("click", function() {
+            fetch('appConfig.js')
+                .then(res => res.text())
+                .then(text => {
+                    textArea.value = text;
+                    configModal.style.display = "flex";
+                })
+                .catch(() => {
+                    textArea.value = "// Greška pri učitavanju fajla";
+                    configModal.style.display = "flex";
+                });
+        });
 
-            if (e.touches.length > 1) {
-                tapCount = 0;
-                if (tapTimeout) clearTimeout(tapTimeout);
-                return;
+        shadow.getElementById("injCloseConfigBtn").addEventListener("click", function() {
+            configModal.style.display = "none";
+        });
+
+        shadow.getElementById("injSaveConfigBtn").addEventListener("click", function() {
+            if (window.AndroidBridgeSaver && typeof window.AndroidBridgeSaver.saveConfigFile === 'function') {
+                window.AndroidBridgeSaver.saveConfigFile(textArea.value);
+                window.AndroidBridgeSaver.restartApp();
+            } else {
+                alert("Bridge nije dostupan!");
             }
+        });
 
+        document.addEventListener("touchstart", function(e) {
+            if (popup.style.display === "flex" || configModal.style.display === "flex") return;
+            if (e.touches.length > 1) { tapCount = 0; return; }
             startX = e.touches[0].clientX;
             startY = e.touches[0].clientY;
-
             tapCount++;
             if (tapTimeout) clearTimeout(tapTimeout);
-
             if (tapCount >= 6) {
                 tapCount = 0;
                 popup.style.display = "flex";
             } else {
-                tapTimeout = setTimeout(() => {
-                    tapCount = 0;
-                }, 350);
-            }
-        }, { capture: true, passive: true });
-
-        document.addEventListener("touchmove", function(e) {
-            if (popup.style.display === "flex" || tapCount === 0) return;
-
-            if (e.touches.length > 0) {
-                const moveX = e.touches[0].clientX;
-                const moveY = e.touches[0].clientY;
-
-                if (Math.abs(moveX - startX) > 10 || Math.abs(moveY - startY) > 10) {
-                    tapCount = 0;
-                    if (tapTimeout) clearTimeout(tapTimeout);
-                }
+                tapTimeout = setTimeout(() => { tapCount = 0; }, 350);
             }
         }, { capture: true, passive: true });
 
@@ -591,22 +662,9 @@ async function loadApp(htmlContent, fileName = ""){
                                 try {
                                     localStorage.clear();
                                     sessionStorage.clear();
-                                    document.cookie.split(";").forEach(function(c) { 
-                                        document.cookie = c.replace(/^ +/, "").replace(/=.*/, "=;expires=" + new Date().toUTCString() + ";path=/"); 
-                                    });
                                     if ('caches' in window) {
                                         const cacheNames = await caches.keys();
-                                        for (const name of cacheNames) {
-                                            await caches.delete(name);
-                                        }
-                                    }
-                                    if (indexedDB && indexedDB.databases) {
-                                        const dbs = await indexedDB.databases();
-                                        for (const dbInfo of dbs) {
-                                            if (dbInfo.name && dbInfo.name !== DB_NAME) {
-                                                indexedDB.deleteDatabase(dbInfo.name);
-                                            }
-                                        }
+                                        for (const name of cacheNames) { await caches.delete(name); }
                                     }
                                 } catch(err) {}
                             }
@@ -618,18 +676,13 @@ async function loadApp(htmlContent, fileName = ""){
                                 const store = tx.objectStore(STORE_NAME);
                                 store.put(htmlContent, "userApp");
                                 store.put(fileName, "userAppName");
-                                tx.oncomplete = function() {
-                                    location.reload();
-                                };
+                                tx.oncomplete = function() { location.reload(); };
                             };
                         };
                         reader.readAsText(file);
-                    } else {
-                        alert("Please select a valid HTML file.");
                     }
                 }
             });
-
             fileInput.click();
         });
     })();
@@ -649,9 +702,6 @@ async function loadApp(htmlContent, fileName = ""){
     document.close();
 }
 
-//========================
-//  AUTO LOAD APP
-//========================
 getSavedApp().then(saved => {
     if(saved && saved.content){
         loadApp(saved.content, saved.name || "");
@@ -660,9 +710,6 @@ getSavedApp().then(saved => {
     }
 });
 
-//=========================
-//  LOAD / REPLACE BUTTON
-//=========================
 document.getElementById("loadBtn").addEventListener("click", function(){
     document.getElementById("fileInput").click();
 });
@@ -670,57 +717,26 @@ document.getElementById("loadBtn").addEventListener("click", function(){
 document.getElementById("fileInput").addEventListener("change", function(event){
     const file = event.target.files[0];
     if(file){
-        const fileName = file.name ? file.name.toLowerCase() : "";
-        if(file.type === "text/html" || file.type === "" || fileName.endsWith(".html") || fileName.endsWith(".htm")){
-            const reader = new FileReader();
-            reader.onload = async function(e) {
-                const htmlContent = e.target.result;
-
-                const clearCheckbox = document.getElementById("clearDataCheckbox");
-                const shouldClearData = clearCheckbox && clearCheckbox.checked;
-
-                if (shouldClearData) {
-                    try {
-                        localStorage.clear();
-                        sessionStorage.clear();
-                        document.cookie.split(";").forEach(function(c) { 
-                            document.cookie = c.replace(/^ +/, "").replace(/=.*/, "=;expires=" + new Date().toUTCString() + ";path=/"); 
-                        });
-                        if ('caches' in window) {
-                            const cacheNames = await caches.keys();
-                            for (const name of cacheNames) {
-                                await caches.delete(name);
-                            }
-                        }
-                        if (indexedDB && indexedDB.databases) {
-                            const dbs = await indexedDB.databases();
-                            for (const dbInfo of dbs) {
-                                if (dbInfo.name && dbInfo.name !== DB_NAME) {
-                                    indexedDB.deleteDatabase(dbInfo.name);
-                                }
-                            }
-                        }
-                    } catch(err) {}
-                }
-
-                await saveApp(htmlContent, fileName);
-                loadApp(htmlContent, fileName);
-                event.target.value = '';
-            };
-            reader.readAsText(file);
-        } else {
-            alert("Please select a valid HTML file.");
-        }
+        const reader = new FileReader();
+        reader.onload = async function(e) {
+            const htmlContent = e.target.result;
+            const clearCheckbox = document.getElementById("clearDataCheckbox");
+            if (clearCheckbox && clearCheckbox.checked) {
+                try {
+                    localStorage.clear();
+                    sessionStorage.clear();
+                } catch(err) {}
+            }
+            await saveApp(htmlContent, file.name);
+            loadApp(htmlContent, file.name);
+        };
+        reader.readAsText(file);
     }
 });
 
-//========================
-//  EXIT BUTTON
-//========================
 document.getElementById("exitBtn").addEventListener("click", function(){
     window.close();
 });
-
 </script>
 </body>
 </html>
