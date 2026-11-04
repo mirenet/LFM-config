@@ -39,7 +39,7 @@ html, body{
     background: #1a1a1c;
     border-radius: 12px;
     border: none;
-    padding: 22px 18px;
+    padding: 22px 18px 24px 18px; /* Malo više prostora na dnu */
     box-shadow: 0 0 0 0.9px #7C874F;
     box-sizing: border-box;
     z-index: 1000;
@@ -48,10 +48,11 @@ html, body{
 .popup-header {
     display: flex;
     align-items: center;
-    margin-top: -6px;
+    margin-top: -2px;
     margin-bottom: 20px;
     width: 100%;
     position: relative;
+    height: 30px;
 }
 
 .popup h3{
@@ -59,8 +60,12 @@ html, body{
     color: #CBD868;
     font-size: 17px;
     font-weight: 600;
-    flex-grow: 1;
+    width: 100%;
     text-align: center;
+    position: absolute;
+    left: 0;
+    right: 0;
+    pointer-events: none;
 }
 
 .config-icon-btn {
@@ -76,7 +81,9 @@ html, body{
     justify-content: center;
     position: absolute;
     right: 0;
+    z-index: 2;
     outline: none;
+    -webkit-tap-highlight-color: transparent;
 }
 
 .config-icon-btn svg {
@@ -131,7 +138,7 @@ html, body{
     display: flex;
     gap: 12px;
     justify-content: center;
-    margin-top: 16px;
+    margin-top: 18px;
 }
 
 .row button{
@@ -144,6 +151,7 @@ html, body{
     background-color: var(--btn-accent);
     color: #555;
     outline: none;
+    -webkit-tap-highlight-color: transparent;
 }
 
 .mask-text{
@@ -161,7 +169,6 @@ html, body{
 <!-- GLAVNI POPUP -->
 <div class="popup" id="mainPopup">
     <div class="popup-header">
-        <span style="width: 30px;"></span>
         <h3 id="popupTitle">Load Html</h3>
         <button id="openConfigBtn" class="config-icon-btn" title="Edit config">
             <svg viewBox="0 0 24 24">
@@ -189,11 +196,9 @@ html, body{
 <!-- EDITOR MODAL -->
 <div class="popup" id="configModal">
     <div class="popup-header">
-        <span style="width: 30px;"></span>
-        <h3>Edit appConfig.js</h3>
-        <span></span>
+        <h3>App Config</h3>
     </div>
-    <textarea id="configTextArea" style="width:100%; height:180px; background:#111; color:#CBD868; border:1px solid #555b35; border-radius:8px; padding:10px; font-family:monospace; font-size:12px; box-sizing:border-box; outline:none; resize:none;"></textarea>
+    <textarea id="configTextArea" style="width:100%; height:180px; background:#111; color:#CBD868; border:1.5px solid #555b35; border-radius:8px; padding:10px; font-family:monospace; font-size:12px; box-sizing:border-box; outline:none; resize:none;"></textarea>
     <div class="row" style="margin-top:14px;">
         <button id="saveConfigBtn"><span class="mask-text">Save</span></button>
         <button id="closeConfigBtn"><span class="mask-text">Close</span></button>
@@ -330,7 +335,7 @@ async function loadApp(htmlContent, fileName = ""){
                 background: #1a1a1c;
                 border-radius: 12px;
                 border: none;
-                padding: 22px 18px;
+                padding: 22px 18px 24px 18px;
                 box-shadow: 0 0 0 0.9px #7C874F;
                 box-sizing: border-box;
                 z-index: 2147483647;
@@ -340,18 +345,23 @@ async function loadApp(htmlContent, fileName = ""){
             .popup-header {
                 display: flex;
                 align-items: center;
-                margin-top: -6px;
+                margin-top: -2px;
                 margin-bottom: 20px;
                 width: 100%;
                 position: relative;
+                height: 30px;
             }
             .popup h3 {
                 margin: 0;
                 color: #CBD868;
                 font-size: 17px;
                 font-weight: 600;
-                flex-grow: 1;
+                width: 100%;
                 text-align: center;
+                position: absolute;
+                left: 0;
+                right: 0;
+                pointer-events: none;
             }
             .config-icon-btn {
                 background: none;
@@ -366,7 +376,9 @@ async function loadApp(htmlContent, fileName = ""){
                 justify-content: center;
                 position: absolute;
                 right: 0;
+                z-index: 2;
                 outline: none;
+                -webkit-tap-highlight-color: transparent;
             }
             .config-icon-btn svg {
                 width: 18px;
@@ -415,7 +427,7 @@ async function loadApp(htmlContent, fileName = ""){
                 display: flex;
                 gap: 12px;
                 justify-content: center;
-                margin-top: 16px;
+                margin-top: 18px;
             }
             .row button {
                 flex: 1 1 0;
@@ -427,6 +439,7 @@ async function loadApp(htmlContent, fileName = ""){
                 background-color: #CBD868;
                 color: #555;
                 outline: none;
+                -webkit-tap-highlight-color: transparent;
             }
             .mask-text {
                 color: #555;
@@ -436,7 +449,6 @@ async function loadApp(htmlContent, fileName = ""){
 
         <div id="injectedPopup" class="popup">
             <div class="popup-header">
-                <span style="width: 30px;"></span>
                 <h3>Load Html</h3>
                 <button id="injOpenConfigBtn" class="config-icon-btn" title="Edit config">
                     <svg viewBox="0 0 24 24">
@@ -459,11 +471,9 @@ async function loadApp(htmlContent, fileName = ""){
 
         <div id="injectedConfigModal" class="popup">
             <div class="popup-header">
-                <span style="width: 30px;"></span>
-                <h3>Edit appConfig.js</h3>
-                <span></span>
+                <h3>App Config</h3>
             </div>
-            <textarea id="injConfigTextArea" style="width:100%; height:180px; background:#111; color:#CBD868; border:1px solid #555b35; border-radius:8px; padding:10px; font-family:monospace; font-size:12px; box-sizing:border-box; outline:none; resize:none;"></textarea>
+            <textarea id="injConfigTextArea" style="width:100%; height:180px; background:#111; color:#CBD868; border:1.5px solid #555b35; border-radius:8px; padding:10px; font-family:monospace; font-size:12px; box-sizing:border-box; outline:none; resize:none;"></textarea>
             <div class="row" style="margin-top:14px;">
                 <button id="injSaveConfigBtn"><span class="mask-text">Save</span></button>
                 <button id="injCloseConfigBtn"><span class="mask-text">Close</span></button>
