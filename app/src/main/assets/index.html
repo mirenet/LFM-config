@@ -16,6 +16,7 @@
     --btn-active: #8C7F6F;
 }
 
+/* Back. */
 html, body{
     margin:0;
     height:100%;
@@ -28,14 +29,7 @@ html, body{
     user-select: none;    
 }
 
-button, input {
-    -webkit-tap-highlight-color: transparent;
-}
-
-button:focus, button:active, input:focus {
-    outline: none;
-}
-
+/* Popup */
 .popup{
     display: none;
     flex-direction: column;
@@ -52,39 +46,61 @@ button:focus, button:active, input:focus {
     padding: 22px 18px 24px 18px;
     box-shadow: 0 0 0 0.9px #7C874F;
     box-sizing: border-box;
+    overflow: hidden;
+    word-wrap: break-word;
     z-index: 1000;
 }
 
+/* Config: manji donji padding da dugmad budu 6px od ivice i veći textarea */
+#configModal {
+    padding-bottom: 20px !important;
+}
+
+/* Config: Produženo polje za tekst nadole */
+#configModal textarea {
+    height: 204px !important;
+}
+
+/* Glavni Popup Header (Load Html) */
 .popup-header {
+    position: relative;
     display: flex;
     align-items: center;
-    margin-top: -10px;
-    margin-bottom: 20px;
+    justify-content: center;
+    margin-top: -6px;
+    margin-bottom: 55px;
     width: 100%;
 }
 
 .popup h3{
     margin: 0;
-    margin-top: -0.8px;
-    margin-bottom: 4px;
     color: #CBD868;
     font-size: 17px;
     font-weight: 600;
-    flex-grow: 1;
     text-align: center;
 }
 
+/* Config Popup Header - mala margina od 6px ispod naslova ka textarea */
+#configModal .popup-header {
+    margin-bottom: 2px !important;
+    margin-top: -10px !important;
+}
+
+#configModal h3 {
+    text-align: left !important;
+    margin-bottom: 6px !important;
+}
+
+/* Točkić uvek u ravni sa naslovom desno */
 .settings-icon-btn {
-    margin-top: 0px;
-    margin-left: -7px;
-    margin-right: 5px;
-    margin-bottom: 4px;
+    -webkit-tap-highlight-color: transparent;
+    position: absolute;
+    right: 0;
     background: none;
     border: none;
     color: #CBD868;
     cursor: pointer;
     border-radius: 6px;
-    flex-shrink: 0;
     transition: background 0.15s;
     outline: none;
     width: 30px;
@@ -108,12 +124,18 @@ button:focus, button:active, input:focus {
     fill: none;
 }
 
+/* Checkbox container */
 .checkbox-row {
-    margin: 12px 0 0 4px;
+    -webkit-tap-highlight-color: transparent;
+    appearance: none;
+    margin: 12px 0 0px 4px;
     display: flex;
+    justify-content: flex-start;
     align-items: center;
     color: #DADADA;
     font-size: 14px;
+    text-align: left;
+    min-height: 22px;
 }
 
 .checkbox-row label {
@@ -123,8 +145,12 @@ button:focus, button:active, input:focus {
     display: flex;
     align-items: center;
     gap: 11px;
+    user-select: none;
+    text-align: left;
+    -webkit-tap-highlight-color: transparent;
 }
 
+/* Custom Checkbox - Uklonjen plavi hover/tap efekat pretraživača */
 .checkbox-row label input[type="checkbox"] {
     appearance: none;
     -webkit-appearance: none;
@@ -139,11 +165,13 @@ button:focus, button:active, input:focus {
     display: inline-flex;
     align-items: center;
     justify-content: center;
+    transition: filter 0.15s, background-color 0.15s, border-color 0.15s;
     position: relative;
+    -webkit-tap-highlight-color: transparent;
     box-sizing: border-box;
-    flex-shrink: 0;
 }
 
+/* Inside Tick */
 .checkbox-row label input[type="checkbox"]::after {
     content: "";
     width: 3px;
@@ -157,6 +185,7 @@ button:focus, button:active, input:focus {
     filter: brightness(0); 
 }
 
+/* Checked state */
 .checkbox-row label input[type="checkbox"]:checked {
     background-color: var(--btn-accent);
     border-color: var(--btn-accent);
@@ -166,35 +195,71 @@ button:focus, button:active, input:focus {
     transform: rotate(40deg) scale(1);
 }
 
-.row{
-    display: flex;
-    gap: 12px;
-    justify-content: center;
-    margin-top: 18px;
+/* Checkbox - hover & click */
+@media (hover: hover) and (pointer: fine) {
+    .checkbox-row label input[type="checkbox"]:hover {
+        filter: brightness(1.25);
+    }
 }
 
+.checkbox-row label input[type="checkbox"]:active {
+    filter: brightness(1.25);
+    background-color: var(--btn-accent);
+}
+
+/* Butn. row */
+.row{
+    display: flex;
+    flex-wrap: wrap;
+    gap: 12px;
+    justify-content: center;
+    margin-top: 16px;
+    margin-bottom: -4px;  /* pading ispod dugmica - glavni prozor */
+}
+
+/* Butn. in popup */
 .row button{
     flex: 1 1 0;
+    width: 0;
+    min-width: 30%;
+    max-width: 60%;
+    box-sizing: border-box;
     padding: 11px;
     border-radius: 10px;
     border: none;
     cursor: pointer;
     font-weight: 600;
-    background-color: var(--btn-accent);
-    color: #555;
+    background-color: var(--btn-accent) !important;
+    color: #555 !important;
+    margin-top: 6px;  /* pading iznad dugmica - config prozor */
+    transition: filter 0.15s, background 0.15s;
     outline: none;
     -webkit-tap-highlight-color: transparent;
-    transition: filter 0.15s, background 0.15s;
+    appearance: none;
 }
 
-.row button:hover, .settings-icon-btn:hover {
+/* Hover */
+@media (hover: hover) and (pointer: fine) {
+    .row button:hover{
+        filter: brightness(1.25);
+        box-shadow: 0 3px 10px rgba(0,0,0,0.3);
+    }
+}
+
+/* Click */
+.row button:active{
     filter: brightness(1.25);
     box-shadow: 0 3px 10px rgba(0,0,0,0.3);
 }
 
+/* Mask text */
 .mask-text{
     color: #555;
     filter: brightness(0);
+}
+
+.row button:focus{
+    outline: none;
 }
 
 .hidden-file-input {
@@ -207,12 +272,11 @@ button:focus, button:active, input:focus {
 <!-- GLAVNI POPUP -->
 <div class="popup" id="mainPopup">
     <div class="popup-header">
-        <span style="width: 32px;"></span>
         <h3 id="popupTitle">Load Html</h3>
         <button id="openConfigBtn" class="settings-icon-btn" title="Edit config">
             <svg viewBox="0 0 24 24">
                 <path d="M12 15a3 3 0 1 0 0-6 3 3 0 0 0 0 6Z"/>
-                <path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1-2.83 2.83l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-4 0v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 0 1-2.83-2.83l.06-.06a1.65 1.65 0 0 0 .33-1.82 1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1 0-4h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 0 1 2.83-2.83l.06.06a1.65 1.65 0 0 0 1.82.33H9a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 4 0v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 0 1 2.83 2.83l-.06-.06a1.65 1.65 0 0 0-.33 1.82V9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 0 4h-.09a1.65 1.65 0 0 0-1.51 1Z"/>
+                <path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1-2.83 2.83l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-4 0v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 0 1-2.83-2.83l-.06-.06a1.65 1.65 0 0 0 .33-1.82 1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1 0-4h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 0 1 2.83-2.83l.06.06a1.65 1.65 0 0 0 1.82.33H9a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 4 0v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l-.06-.06a2 2 0 0 1 2.83 2.83l-.06-.06a1.65 1.65 0 0 0-.33 1.82V9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 0 4h-.09a1.65 1.65 0 0 0-1.51 1Z"/>
             </svg>
         </button>
     </div>
@@ -232,15 +296,13 @@ button:focus, button:active, input:focus {
     <input type="file" id="fileInput" class="hidden-file-input" accept=".html,.htm" />
 </div>
 
-<!-- EDITOR MODAL -->
+<!-- EDITOR MODAL (CONFIG) -->
 <div class="popup" id="configModal">
     <div class="popup-header">
-        <span style="width: 32px;"></span>
-        <h3>App Config</h3>
-        <span style="width: 30px;"></span>
+        <h3>Config..</h3>
     </div>
-    <textarea id="configTextArea" style="width:100%; height:180px; background:#111; color:#CBD868; border:1.5px solid #555b35; border-radius:8px; padding:10px; font-family:monospace; font-size:12px; box-sizing:border-box; outline:none; resize:none;"></textarea>
-    <div class="row" style="margin-top:14px;">
+    <textarea id="configTextArea" style="width:100%; height:204px; background:#111; color:#CBD868; border:1.5px solid #555b35; border-radius:8px; padding:10px; font-family:monospace; font-size:12px; box-sizing:border-box; outline:none; resize:none;"></textarea>
+    <div class="row" style="margin-top:10px;">
         <button id="saveConfigBtn"><span class="mask-text">Save</span></button>
         <button id="closeConfigBtn"><span class="mask-text">Close</span></button>
     </div>
@@ -313,6 +375,7 @@ async function getSetting(key){
 
 async function initPreferences() {
     const clearCheckbox = document.getElementById("clearDataCheckbox");
+    if (!clearCheckbox) return;
     const savedState = await getSetting("clearCachePreference");
     clearCheckbox.checked = (savedState === undefined || savedState === null) ? false : savedState;
 
@@ -330,7 +393,7 @@ document.getElementById("openConfigBtn").addEventListener("click", () => {
     if (window.AndroidBridgeSaver && typeof window.AndroidBridgeSaver.loadConfigFileRaw === 'function') {
         configTextArea.value = window.AndroidBridgeSaver.loadConfigFileRaw();
     } else {
-        configTextArea.value = "// Bridge nije dostupan";
+        configTextArea.value = "// Bridge not available";
     }
     configModal.style.display = "flex";
 });
@@ -345,7 +408,7 @@ document.getElementById("saveConfigBtn").addEventListener("click", () => {
         window.AndroidBridgeSaver.saveConfigFile(configTextArea.value);
         window.AndroidBridgeSaver.restartApp();
     } else {
-        alert("Bridge nije dostupan!");
+        alert("Bridge not available!");
     }
 });
 
@@ -395,34 +458,57 @@ async function loadApp(htmlContent, fileName = ""){
                 font-family: Inter, Arial, sans-serif;
                 user-select: none;
             }
+
+            /* Config: manji donji padding da dugmad budu 6px od ivice i veći textarea */
+            #configModal {
+                padding-bottom: 20px !important;
+            }
+
+            /* Config: Produženo polje za tekst nadole */
+            #configModal textarea {
+                height: 204px !important;
+            }
+
+            /* Glavni Popup Header (Load Html) */
             .popup-header {
+                position: relative;
                 display: flex;
                 align-items: center;
-                margin-top: -10px;
-                margin-bottom: 20px;
+                justify-content: center;
+                margin-top: -6px;
+                margin-bottom: 55px;
                 width: 100%;
             }
-            .popup h3 {
+
+            .popup h3{
                 margin: 0;
-                margin-top: -0.8px;
-                margin-bottom: 4px;
                 color: #CBD868;
                 font-size: 17px;
                 font-weight: 600;
-                flex-grow: 1;
                 text-align: center;
             }
+
+            /* Config Popup Header - mala margina od 6px ispod naslova ka textarea */
+            #configModal .popup-header {
+                margin-bottom: 2px !important;
+                margin-top: -10px !important;
+            }
+
+            #configModal h3 {
+                text-align: left !important;
+                margin-bottom: 6px !important;
+            }
+
+            /* Točkić uvek u ravni sa naslovom desno */
             .settings-icon-btn {
-                margin-top: 0px;
-                margin-left: -7px;
-                margin-right: 5px;
-                margin-bottom: 4px;
+                -webkit-tap-highlight-color: transparent;
+                position: absolute;
+                right: 0;
                 background: none;
                 border: none;
                 color: #CBD868;
                 cursor: pointer;
                 border-radius: 6px;
-                flex-shrink: 0;
                 transition: background 0.15s;
                 outline: none;
                 width: 30px;
@@ -431,9 +517,11 @@ async function loadApp(htmlContent, fileName = ""){
                 align-items: center;
                 justify-content: center;
             }
+
             .settings-icon-btn:hover {
                 background: rgba(203, 216, 104, 0.1);
             }
+
             .settings-icon-btn svg {
                 width: 18px;
                 height: 18px;
@@ -443,13 +531,19 @@ async function loadApp(htmlContent, fileName = ""){
                 stroke-linejoin: round;
                 fill: none;
             }
+
+            /* Checkbox container */
             .checkbox-row {
-                margin: 12px 0 0 4px;
+                margin: 12px 0 0px 4px;
                 display: flex;
+                justify-content: flex-start;
                 align-items: center;
                 color: #DADADA;
                 font-size: 14px;
+                text-align: left;
+                min-height: 22px;
             }
+
             .checkbox-row label {
                 color: #DADADA;
                 font-size: 14px;
@@ -457,7 +551,12 @@ async function loadApp(htmlContent, fileName = ""){
                 display: flex;
                 align-items: center;
                 gap: 11px;
+                user-select: none;
+                text-align: left;
+                -webkit-tap-highlight-color: transparent;
             }
+
+            /* Custom Checkbox - Uklonjen plavi hover/tap efekat pretraživača */
             .checkbox-row label input[type="checkbox"] {
                 appearance: none;
                 -webkit-appearance: none;
@@ -472,10 +571,14 @@ async function loadApp(htmlContent, fileName = ""){
                 display: inline-flex;
                 align-items: center;
                 justify-content: center;
+                transition: filter 0.15s, background-color 0.15s, border-color 0.15s;
                 position: relative;
+                -webkit-tap-highlight-color: transparent;
                 box-sizing: border-box;
                 flex-shrink: 0;
             }
+
+            /* Inside Tick */
             .checkbox-row label input[type="checkbox"]::after {
                 content: "";
                 width: 3px;
@@ -488,50 +591,92 @@ async function loadApp(htmlContent, fileName = ""){
                 top: -1px;
                 filter: brightness(0); 
             }
+
+            /* Checked state */
             .checkbox-row label input[type="checkbox"]:checked {
-                background-color: #CBD868;
-                border-color: #CBD868;
+                background-color: var(--btn-accent);
+                border-color: var(--btn-accent);
             }
+
             .checkbox-row label input[type="checkbox"]:checked::after {
                 transform: rotate(40deg) scale(1);
             }
-            .row {
+
+            /* Checkbox - hover & click */
+            @media (hover: hover) and (pointer: fine) {
+                .checkbox-row label input[type="checkbox"]:hover {
+                    filter: brightness(1.25);
+                }
+            }
+
+            .checkbox-row label input[type="checkbox"]:active {
+                filter: brightness(1.25);
+                background-color: var(--btn-accent);
+            }
+
+            /* Butn. row */
+            .row{
                 display: flex;
+                flex-wrap: wrap;
                 gap: 12px;
                 justify-content: center;
-                margin-top: 18px;
+                margin-top: 16px;
+                margin-bottom: -4px;  /* pading ispod dugmica - glavni prozor */
             }
-            .row button {
+
+            /* Butn. in popup */
+            .row button{
                 flex: 1 1 0;
+                width: 0;
+                min-width: 30%;
+                max-width: 60%;
+                box-sizing: border-box;
                 padding: 11px;
                 border-radius: 10px;
                 border: none;
                 cursor: pointer;
                 font-weight: 600;
-                background-color: #CBD868;
-                color: #555;
+                background-color: var(--btn-accent) !important;
+                color: #555 !important;
+                margin-top: 6px;  /* pading iznad dugmica - config prozor */
+                transition: filter 0.15s, background 0.15s;
                 outline: none;
                 -webkit-tap-highlight-color: transparent;
-                transition: filter 0.15s, background 0.15s;
+                appearance: none;
             }
-            .row button:hover, .settings-icon-btn:hover {
+
+            /* Hover */
+            @media (hover: hover) and (pointer: fine) {
+                .row button:hover{
+                    filter: brightness(1.25);
+                    box-shadow: 0 3px 10px rgba(0,0,0,0.3);
+                }
+            }
+
+            /* Click */
+            .row button:active{
                 filter: brightness(1.25);
                 box-shadow: 0 3px 10px rgba(0,0,0,0.3);
             }
-            .mask-text {
+
+            /* Mask text */
+            .mask-text{
                 color: #555;
                 filter: brightness(0);
+            }
+
+            .row button:focus{
+                outline: none;
             }
         </style>
 
         <div id="injectedPopup" class="popup">
             <div class="popup-header">
-                <span style="width: 32px;"></span>
                 <h3>Load Html</h3>
                 <button id="injOpenConfigBtn" class="settings-icon-btn" title="Edit config">
                     <svg viewBox="0 0 24 24">
                         <path d="M12 15a3 3 0 1 0 0-6 3 3 0 0 0 0 6Z"/>
-                        <path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1-2.83 2.83l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-4 0v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 0 1-2.83-2.83l.06-.06a1.65 1.65 0 0 0 .33-1.82 1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1 0-4h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 0 1 2.83-2.83l.06.06a1.65 1.65 0 0 0 1.82.33H9a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 4 0v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 0 1 2.83 2.83l-.06-.06a1.65 1.65 0 0 0-.33 1.82V9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 0 4h-.09a1.65 1.65 0 0 0-1.51 1Z"/>
+                        <path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1-2.83 2.83l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-4 0v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 0 1-2.83-2.83l-.06-.06a1.65 1.65 0 0 0 .33-1.82 1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1 0-4h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 0 1 2.83-2.83l.06.06a1.65 1.65 0 0 0 1.82.33H9a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 4 0v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l-.06-.06a2 2 0 0 1 2.83 2.83l-.06-.06a1.65 1.65 0 0 0-.33 1.82V9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 0 4h-.09a1.65 1.65 0 0 0-1.51 1Z"/>
                     </svg>
                 </button>
             </div>
@@ -547,14 +692,12 @@ async function loadApp(htmlContent, fileName = ""){
             </div>
         </div>
 
-        <div id="injectedConfigModal" class="popup">
+        <div id="configModal" class="popup">
             <div class="popup-header">
-                <span style="width: 32px;"></span>
-                <h3>App Config</h3>
-                <span style="width: 30px;"></span>
+                <h3>Config..</h3>
             </div>
-            <textarea id="injConfigTextArea" style="width:100%; height:180px; background:#111; color:#CBD868; border:1.5px solid #555b35; border-radius:8px; padding:10px; font-family:monospace; font-size:12px; box-sizing:border-box; outline:none; resize:none;"></textarea>
-            <div class="row" style="margin-top:14px;">
+            <textarea id="injConfigTextArea" style="width:100%; height:204px; background:#111; color:#CBD868; border:1.5px solid #555b35; border-radius:8px; padding:10px; font-family:monospace; font-size:12px; box-sizing:border-box; outline:none; resize:none;"></textarea>
+            <div class="row" style="margin-top:10px;">
                 <button id="injSaveConfigBtn"><span class="mask-text">Save</span></button>
                 <button id="injCloseConfigBtn"><span class="mask-text">Close</span></button>
             </div>
@@ -564,7 +707,7 @@ async function loadApp(htmlContent, fileName = ""){
         let tapCount = 0;
         let tapTimeout = null;
         const popup = shadow.getElementById("injectedPopup");
-        const configModal = shadow.getElementById("injectedConfigModal");
+        const configModal = shadow.getElementById("configModal");
         const clearCheckbox = shadow.getElementById("injectedClearDataCheckbox");
         const textArea = shadow.getElementById("injConfigTextArea");
 
@@ -601,7 +744,7 @@ async function loadApp(htmlContent, fileName = ""){
             if (window.AndroidBridgeSaver && typeof window.AndroidBridgeSaver.loadConfigFileRaw === 'function') {
                 textArea.value = window.AndroidBridgeSaver.loadConfigFileRaw();
             } else {
-                textArea.value = "// Bridge nije dostupan";
+                textArea.value = "// Bridge not available";
             }
             configModal.style.display = "flex";
         });
@@ -616,7 +759,7 @@ async function loadApp(htmlContent, fileName = ""){
                 window.AndroidBridgeSaver.saveConfigFile(textArea.value);
                 window.AndroidBridgeSaver.restartApp();
             } else {
-                alert("Bridge nije dostupan!");
+                alert("Bridge not available!");
             }
         });
 
